@@ -55,7 +55,7 @@
     <string name="manager_host_abi_unsupported">Runs as %1$s, which the module does not support</string>
     <string name="manager_section_links">Links</string>
     <string name="manager_source_code">Source code</string>
-    <string name="manager_source_url" translatable="false">https://github.com/dartcv/Nuke-OSS</string>
+    <string name="manager_source_url" translatable="false">https://github.com/dartcv/NukeApp-OSS</string>
     <string name="manager_link_failed">No app can open the link.</string>
     <string name="manager_more">More options</string>
     <string name="manager_launcher_hide">Hide launcher icon</string>

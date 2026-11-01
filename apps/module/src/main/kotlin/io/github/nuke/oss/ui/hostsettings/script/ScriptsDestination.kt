@@ -65,7 +65,7 @@ import io.github.nuke.oss.ui.home.openInBrowser
 import kotlinx.coroutines.launch
 
 // Where the SDK and its README describe writing and packaging scripts.
-internal const val SCRIPT_DOCS_URL = "https://github.com/dartcv/Nuke-OSS/tree/dev/sdk/script-sdk"
+internal const val SCRIPT_DOCS_URL = "https://github.com/dartcv/NukeApp-OSS/tree/dev/sdk/script-sdk"
 
 private enum class ScriptsTab(@StringRes val title: Int) {
     INSTALLED(R.string.script_tab_installed),
