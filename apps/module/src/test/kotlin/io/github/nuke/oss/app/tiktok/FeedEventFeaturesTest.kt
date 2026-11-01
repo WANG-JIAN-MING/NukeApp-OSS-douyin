@@ -179,7 +179,7 @@ class FeedEventFeaturesTest : HookHarness() {
 
     @Test fun `the module scheme moves on just before a playing video ends`() {
         val events = events(FeedQueries.PLAY_PROGRESS to listOf(progress))
-        enable(KeepAutoPlayOn(loader, events, scheduler, values(KeepAutoPlayOn.ID, KeepAutoPlayOn.OPTIONS, "scheme" to KeepAutoPlayOn.MODULE)))
+        enable(KeepAutoPlayOn(loader, events, scheduler, { RecordingAutoPlayButton() }, values(KeepAutoPlayOn.ID, KeepAutoPlayOn.OPTIONS, "scheme" to KeepAutoPlayOn.MODULE)))
         val pager = Pager(PagerAdapter(listOf(Aweme("a"), Aweme("b"))))
         backend.call(select, pager, 0, true, false, 0)
         backend.call(play, Engine())
@@ -194,7 +194,7 @@ class FeedEventFeaturesTest : HookHarness() {
 
     @Test fun `a pause or a new video stops the queued move`() {
         val events = events(FeedQueries.PLAY_PROGRESS to listOf(progress))
-        enable(KeepAutoPlayOn(loader, events, scheduler, values(KeepAutoPlayOn.ID, KeepAutoPlayOn.OPTIONS, "scheme" to KeepAutoPlayOn.MODULE)))
+        enable(KeepAutoPlayOn(loader, events, scheduler, { RecordingAutoPlayButton() }, values(KeepAutoPlayOn.ID, KeepAutoPlayOn.OPTIONS, "scheme" to KeepAutoPlayOn.MODULE)))
         val pager = Pager(PagerAdapter(listOf(Aweme("a"), Aweme("b"))))
         backend.call(select, pager, 0, true, false, 0)
         backend.call(play, Engine())
@@ -219,7 +219,7 @@ class FeedEventFeaturesTest : HookHarness() {
             ),
             loader, LiveAweme::class.java.name,
         )
-        enable(KeepAutoPlayOn(loader, events, scheduler, values(
+        enable(KeepAutoPlayOn(loader, events, scheduler, { RecordingAutoPlayButton() }, values(
             KeepAutoPlayOn.ID, KeepAutoPlayOn.OPTIONS, "scheme" to KeepAutoPlayOn.MODULE, "live-seconds" to 20L, "images-seconds" to 0L,
         )))
         val pager = Pager(PagerAdapter(emptyList()))

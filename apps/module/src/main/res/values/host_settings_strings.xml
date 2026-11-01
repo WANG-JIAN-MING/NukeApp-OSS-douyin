@@ -371,6 +371,10 @@
     <string name="host_option_autoplay_scheme_description">Douyin\'s scheme keeps Douyin\'s own autoplay on; the module scheme moves on to the next video itself.</string>
     <string name="host_choice_autoplay_host">Douyin</string>
     <string name="host_choice_autoplay_module">Module</string>
+    <string name="host_option_autoplay_button">Floating switch</string>
+    <string name="host_option_autoplay_button_description">Floats a draggable autoplay button over the video feed. Tap it to turn autoplay off and on again until Douyin restarts.</string>
+    <string name="host_autoplay_on_description">Autoplay on</string>
+    <string name="host_autoplay_off_description">Autoplay off</string>
     <string name="host_option_autoplay_live">Live rooms (seconds)</string>
     <string name="host_option_autoplay_live_description">Module scheme: moves on after this long in a live room. 0 stays.</string>
     <string name="host_option_autoplay_images">Image posts (seconds)</string>

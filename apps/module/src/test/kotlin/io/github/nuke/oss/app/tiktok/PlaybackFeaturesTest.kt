@@ -24,7 +24,7 @@ class PlaybackFeaturesTest : HookHarness() {
     }
 
     private fun autoplay(model: Class<*>) = KeepAutoPlayOn(
-        loader, FeedEvents(resolver(), loader), ManualScheduler(), values(KeepAutoPlayOn.ID, KeepAutoPlayOn.OPTIONS), model.name, FakeLiveData::class.java.name,
+        loader, FeedEvents(resolver(), loader), ManualScheduler(), { RecordingAutoPlayButton() }, values(KeepAutoPlayOn.ID, KeepAutoPlayOn.OPTIONS), model.name, FakeLiveData::class.java.name,
     )
 
     @Test fun `autoplay is switched on whenever the view model is created`() {

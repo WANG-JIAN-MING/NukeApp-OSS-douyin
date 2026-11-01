@@ -116,6 +116,7 @@ internal fun testServices(
     cleanScreen = { RecordingCleanScreen() },
     opacityScreen = { RecordingOpacityScreen() },
     dislikeButton = { RecordingDislikeButton() },
+    autoPlayButton = { RecordingAutoPlayButton() },
     messageLabels = { RecordingMessageLabels() },
     chatSwipe = { RecordingChatSwipe() },
     repeatMarks = { RecordingRepeatMarks() },
@@ -181,6 +182,16 @@ internal class RecordingDislikeButton : io.github.nuke.oss.app.tiktok.feature.fe
     override fun attach(bar: Any, placement: io.github.nuke.oss.app.tiktok.feature.feed.DislikePlacement, onClick: (context: Any) -> Unit) {
         attached += Attached(bar, placement, onClick)
     }
+}
+
+internal class RecordingAutoPlayButton : io.github.nuke.oss.app.tiktok.feature.playback.AutoPlayButton {
+    class Attached(val bar: Any, val active: () -> Boolean, val onClick: () -> Unit)
+    val attached = ArrayList<Attached>()
+    val updates = ArrayList<Boolean>()
+    override fun attach(bar: Any, active: () -> Boolean, onClick: () -> Unit) {
+        attached += Attached(bar, active, onClick)
+    }
+    override fun update(active: Boolean) { updates += active }
 }
 
 internal class RecordingMessageLabels : io.github.nuke.oss.app.tiktok.feature.chat.MessageTimeLabels {

@@ -370,6 +370,10 @@
     <string name="host_option_autoplay_scheme_description">抖音方案保持抖音自带的自动连播开启；模块方案由模块自己翻到下一个视频。</string>
     <string name="host_choice_autoplay_host">抖音方案</string>
     <string name="host_choice_autoplay_module">模块方案</string>
+    <string name="host_option_autoplay_button">悬浮开关</string>
+    <string name="host_option_autoplay_button_description">在视频页上方浮出一个可拖动的自动播按钮，点击即可临时关闭或重新打开自动连播，抖音重启后恢复。</string>
+    <string name="host_autoplay_on_description">自动播已开启</string>
+    <string name="host_autoplay_off_description">自动播已关闭</string>
     <string name="host_option_autoplay_live">直播间连播时长（秒）</string>
     <string name="host_option_autoplay_live_description">模块方案：在直播间停留这么久后翻到下一个。0 表示不连播。</string>
     <string name="host_option_autoplay_images">图集连播时长（秒）</string>

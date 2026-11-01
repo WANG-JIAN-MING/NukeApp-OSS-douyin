@@ -39,6 +39,7 @@ import io.github.nuke.oss.app.tiktok.feature.feed.AuthorRow
 import io.github.nuke.oss.app.tiktok.feature.feed.BottomInfoLabels
 import io.github.nuke.oss.app.tiktok.feature.feed.CoverDecorator
 import io.github.nuke.oss.app.tiktok.feature.feed.DislikeButton
+import io.github.nuke.oss.app.tiktok.feature.playback.AutoPlayButton
 import io.github.nuke.oss.app.tiktok.feature.playback.DanmakuMenu
 import io.github.nuke.oss.app.tiktok.feature.playback.ProgressLabel
 import io.github.nuke.oss.app.tiktok.feature.screen.OpacityScreen
@@ -67,6 +68,7 @@ internal class TikTokFeatureServices(
     val cleanScreen: () -> CleanScreen,
     val opacityScreen: () -> OpacityScreen,
     val dislikeButton: () -> DislikeButton,
+    val autoPlayButton: () -> AutoPlayButton,
     val messageLabels: () -> MessageTimeLabels,
     val chatSwipe: () -> ChatSwipe,
     val repeatMarks: () -> RepeatMarks,

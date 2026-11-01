@@ -78,6 +78,7 @@ import io.github.nuke.oss.app.tiktok.injector.AndroidCleanScreen
 import io.github.nuke.oss.app.tiktok.injector.AndroidCommentButtons
 import io.github.nuke.oss.app.tiktok.injector.AndroidCoverDecorator
 import io.github.nuke.oss.app.tiktok.injector.AndroidDanmakuMenu
+import io.github.nuke.oss.app.tiktok.injector.AndroidAutoPlayButton
 import io.github.nuke.oss.app.tiktok.injector.AndroidDislikeButton
 import io.github.nuke.oss.app.tiktok.injector.AndroidMessageTimeLabels
 import io.github.nuke.oss.app.tiktok.injector.AndroidOpacityScreen
@@ -408,6 +409,7 @@ private fun featureServices(
             moduleStrings = moduleStrings,
             tabMenu = { AndroidTabMenu(moduleStrings, environment.logger) },
             dislikeButton = { AndroidDislikeButton(environment.event.build, environment.logger) },
+            autoPlayButton = { AndroidAutoPlayButton(environment.event.build, environment.logger) },
             progressLabel = { AndroidProgressLabel() },
             bottomInfoLabels = { AndroidBottomInfoLabels() },
             streakDirectory = streakDirectory,

@@ -241,6 +241,7 @@ internal val optionLabels = mapOf<String, OptionLabel>(
     "CheckSentComments/delay-seconds" to OptionLabel(R.string.host_option_sent_delay, R.string.host_option_sent_delay_description),
     "CommentPreciseTime/pattern" to OptionLabel(R.string.host_option_comment_time_pattern, R.string.host_option_comment_time_pattern_description),
     "CommentDetails/bookmarks" to OptionLabel(R.string.host_option_comment_bookmarks, R.string.host_option_comment_bookmarks_description),
+    "KeepAutoplayOn/button" to OptionLabel(R.string.host_option_autoplay_button, R.string.host_option_autoplay_button_description),
     "KeepAutoplayOn/live-seconds" to OptionLabel(R.string.host_option_autoplay_live, R.string.host_option_autoplay_live_description),
     "KeepAutoplayOn/images-seconds" to OptionLabel(R.string.host_option_autoplay_images, R.string.host_option_autoplay_images_description),
     "ConfirmBeforeActions/events" to OptionLabel(R.string.host_option_confirm_events, R.string.host_option_confirm_events_description, mapOf("follow" to R.string.host_choice_confirm_follow, "like" to R.string.host_choice_confirm_like, "daily" to R.string.host_choice_confirm_daily, "live" to R.string.host_choice_confirm_live, "full-screen" to R.string.host_choice_confirm_full_screen, "topic" to R.string.host_choice_confirm_topic, "live-cover" to R.string.host_choice_confirm_live_cover, "search" to R.string.host_choice_confirm_search, "comment-like" to R.string.host_choice_confirm_comment_like, "collect" to R.string.host_choice_confirm_collect)),
