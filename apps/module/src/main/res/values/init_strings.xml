@@ -1,0 +1,16 @@
+<resources>
+    <string name="init_title">Set up Nuke</string>
+    <string name="init_intro">This version of the app has not been analyzed yet. Pick a few options first; you can change them later in Nuke\'s settings.</string>
+    <string name="init_bug_reports">Anonymous bug reports</string>
+    <string name="init_bug_reports_description">Allow reports of failed features and lookups with the app version, without account data or chat content. This build has no report service yet, so nothing is sent.</string>
+    <string name="init_continue">Continue</string>
+    <string name="init_analyzing">Running the Dex analysis [%1$d/%2$d]</string>
+    <string name="init_failed">The Dex analysis failed: %1$s</string>
+    <string name="init_retry">Retry</string>
+    <string name="init_close">Close</string>
+    <string name="init_restarting">Dex analysis finished. Restarting the host app.</string>
+    <string name="init_restarting_failed">Dex analysis finished. %1$d of %2$d targets did not match, so their features stay off. Restarting the host app.</string>
+    <string name="init_analysis_title">Analyzing Dex</string>
+    <string name="init_step_native">Checking the native runtime</string>
+    <string name="init_step_environment">Initializing the Dex analysis environment [%1$d/%2$d]</string>
+</resources>

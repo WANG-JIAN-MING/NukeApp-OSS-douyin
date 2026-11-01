@@ -1,0 +1,66 @@
+<resources>
+    <string name="manager_export_action">导出模块 APK</string>
+    <string name="manager_exporting">正在导出文件，请稍候…</string>
+    <string name="manager_error_export">文件导出失败，请检查目标位置、写入权限和可用空间。可以再次选择导出位置重试。</string>
+    <string name="manager_export_module_success">已导出模块 APK。</string>
+    <string name="manager_export_failure">导出失败，请检查目标文件权限和可用空间。</string>
+    <string name="manager_failure_title">操作未完成</string>
+    <string name="manager_close">关闭</string>
+
+
+    <string name="manager_deploy_xposed_title">Xposed 框架</string>
+    <string name="manager_deploy_xposed_description">在支持 XP82 或 libxposed API 102 的框架中启用 NukeApp-OSS，作用域勾选目标应用，然后完全重启目标应用。</string>
+    <string name="manager_deploy_root_title">Root 管理器（Zygisk）</string>
+    <string name="manager_deploy_root_description">导出模块 APK，或直接复制构建产物，把文件扩展名从 .apk 改为 .zip，在 Magisk 等 Root 管理器中安装，启用 Zygisk 后重启设备。仅支持 arm64-v8a。</string>
+    <string name="manager_deploy_patch_title">APK 修补</string>
+    <string name="manager_deploy_patch_description">在独立的 NukePatcher 中分别选择导出的模块 APK 与目标 APK，修补后安装输出文件。修补器无需安装或访问 NukeApp-OSS。</string>
+
+    <string name="manager_scope_fixture">测试宿主</string>
+    <string name="manager_scope_tiktok">抖音</string>
+    <string name="manager_scope_settings">抖音的功能开关位于抖音设置页中的 NukeApp-OSS 入口，修改后重启抖音生效。</string>
+    <string name="manager_modes_explanation">同一进程中最先生效的入口取得所有权，其余入口跳过，避免本模块重复 Hook。初始化失败后需重启宿主，不会自动切换入口。</string>
+
+    <string name="manager_about_title">关于 NukeApp-OSS</string>
+    <string name="manager_about_architecture">NukeApp-OSS 提供 XP82、libxposed API 102、Zygisk 三种接入与公共调度；APK 修补由独立应用 NukePatcher 提供。</string>
+
+    <string name="manager_features_where_title">功能开关位置</string>
+    <string name="manager_about_version">版本</string>
+    <string name="manager_about_package">包名</string>
+    <string name="manager_search_placeholder">搜索</string>
+    <string name="manager_search_empty">没有与“%1$s”匹配的内容。</string>
+
+    <string name="manager_status_reading">正在检查激活状态…</string>
+    <string name="manager_status_active">已激活</string>
+    <string name="manager_status_partial">部分激活</string>
+    <string name="manager_status_inactive">未激活</string>
+    <string name="manager_status_none">没有 Xposed 框架加载本模块。</string>
+    <string name="manager_status_no_scope">%1$s，但作用域中没有目标应用。</string>
+    <string name="manager_status_abi">有目标应用以 %1$s 运行，模块没有该架构的原生代码。</string>
+    <string name="manager_details_title">激活详情</string>
+    <string name="manager_details_legacy">XP82：%1$s 已加载模块。</string>
+    <string name="manager_details_legacy_none">XP82：没有框架在模块自身进程中加载模块。</string>
+    <string name="manager_details_service">API 102 服务：%1$s，作用域 %2$s。</string>
+    <string name="manager_details_service_none">API 102 服务：未连接。</string>
+    <string name="manager_details_scope_empty">为空</string>
+    <string name="manager_details_undetectable">Root（Zygisk）与修补安装只在目标应用内运行，本页面无法检测。请在目标应用设置中的 NukeApp-OSS 入口查看。</string>
+    <string name="manager_section_targets">目标应用</string>
+    <string name="manager_host_not_installed">未安装</string>
+    <string name="manager_host_in_scope">已在作用域</string>
+    <string name="manager_host_not_in_scope">不在作用域</string>
+    <string name="manager_host_scope_unknown">作用域未知</string>
+    <string name="manager_host_abi_unsupported">以 %1$s 运行，模块不支持该架构</string>
+    <string name="manager_section_links">链接</string>
+    <string name="manager_source_code">源代码</string>
+    <string name="manager_link_failed">没有可以打开链接的应用。</string>
+    <string name="manager_more">更多选项</string>
+    <string name="manager_launcher_hide">隐藏桌面图标</string>
+    <string name="manager_launcher_show">显示桌面图标</string>
+    <string name="manager_launcher_hidden">已隐藏桌面图标，可从 Xposed 管理器打开 NukeApp-OSS。</string>
+    <string name="manager_launcher_shown">已显示桌面图标。</string>
+    <plurals name="manager_host_running">
+        <item quantity="other">已在 %1$d 个进程中加载</item>
+    </plurals>
+    <plurals name="manager_host_restart">
+        <item quantity="other">%1$d 个需要重启</item>
+    </plurals>
+</resources>

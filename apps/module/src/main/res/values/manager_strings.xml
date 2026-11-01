@@ -1,0 +1,73 @@
+<resources>
+    <string name="manager_app_name" translatable="false">NukeApp-OSS</string>
+    <string name="manager_app_package" translatable="false">io.github.nuke.oss</string>
+    <string name="manager_export_action">Export module APK</string>
+    <string name="manager_exporting">Exporting, please wait…</string>
+    <string name="manager_error_export">Could not export the file. Check the destination, write permission and free space, then choose a location again.</string>
+    <string name="manager_export_module_success">Module APK exported.</string>
+    <string name="manager_export_failure">Export failed. Check file permissions and free space.</string>
+    <string name="manager_failure_title">Not completed</string>
+    <string name="manager_close">Close</string>
+
+
+    <string name="manager_deploy_xposed_title">Xposed framework</string>
+    <string name="manager_deploy_xposed_description">Enable NukeApp-OSS in a framework that supports XP82 or libxposed API 102, select the target apps in its scope, then fully restart them.</string>
+    <string name="manager_deploy_root_title">Root manager (Zygisk)</string>
+    <string name="manager_deploy_root_description">Export the module APK or copy the built one, change its extension from .apk to .zip, install it in Magisk or another root manager, enable Zygisk and reboot. Only arm64-v8a is supported.</string>
+    <string name="manager_deploy_patch_title">APK patching</string>
+    <string name="manager_deploy_patch_description">In the separate NukePatcher app, choose the exported module APK and the target APK, then install the patched output. The patcher does not need NukeApp-OSS installed.</string>
+
+    <string name="manager_scope_fixture">Test host</string>
+    <string name="manager_scope_tiktok">Douyin</string>
+    <string name="manager_scope_settings">Douyin feature switches are under the NukeApp-OSS entry in Douyin\'s settings. Changes take effect after Douyin restarts.</string>
+    <string name="manager_modes_explanation">The first entry to take effect in a process owns it; the others skip, so this module never hooks twice. After a failed start the host must be restarted; the entry never switches on its own.</string>
+
+    <string name="manager_about_title">About NukeApp-OSS</string>
+    <string name="manager_about_architecture">NukeApp-OSS provides XP82, libxposed API 102 and Zygisk entries with shared scheduling; APK patching is provided by the separate NukePatcher app.</string>
+
+    <string name="manager_features_where_title">Where to switch features</string>
+    <string name="manager_about_version">Version</string>
+    <string name="manager_about_package">Package name</string>
+    <string name="manager_search_placeholder">Search</string>
+    <string name="manager_search_empty">Nothing matches “%1$s”.</string>
+
+    <string name="manager_status_reading">Checking activation…</string>
+    <string name="manager_status_active">Activated</string>
+    <string name="manager_status_partial">Partially activated</string>
+    <string name="manager_status_inactive">Not activated</string>
+    <string name="manager_status_service" translatable="false">%1$s %2$s (%3$d) · API %4$d</string>
+    <string name="manager_status_legacy" translatable="false">%1$s · XP82</string>
+    <string name="manager_status_none">No Xposed framework has loaded the module.</string>
+    <string name="manager_status_no_scope">%1$s, but no target app is in the module\'s scope.</string>
+    <string name="manager_status_abi">A target app runs as %1$s, which the module has no native code for.</string>
+    <string name="manager_details_title">Activation details</string>
+    <string name="manager_details_legacy">XP82: %1$s loaded the module.</string>
+    <string name="manager_details_legacy_none">XP82: no framework loaded the module into its own process.</string>
+    <string name="manager_details_service">API 102 service: %1$s, scope %2$s.</string>
+    <string name="manager_details_service_none">API 102 service: not connected.</string>
+    <string name="manager_details_scope_empty">empty</string>
+    <string name="manager_details_undetectable">Root (Zygisk) and patched installs run only inside the target apps, so this screen cannot detect them. Open NukeApp-OSS from the target app\'s settings to check them.</string>
+    <string name="manager_section_targets">Target apps</string>
+    <string name="manager_host_not_installed">Not installed</string>
+    <string name="manager_host_in_scope">In scope</string>
+    <string name="manager_host_not_in_scope">Not in scope</string>
+    <string name="manager_host_scope_unknown">Scope unknown</string>
+    <string name="manager_host_abi_unsupported">Runs as %1$s, which the module does not support</string>
+    <string name="manager_section_links">Links</string>
+    <string name="manager_source_code">Source code</string>
+    <string name="manager_source_url" translatable="false">https://github.com/dartcv/Nuke-OSS</string>
+    <string name="manager_link_failed">No app can open the link.</string>
+    <string name="manager_more">More options</string>
+    <string name="manager_launcher_hide">Hide launcher icon</string>
+    <string name="manager_launcher_show">Show launcher icon</string>
+    <string name="manager_launcher_hidden">Launcher icon hidden. Open NukeApp-OSS from your Xposed manager.</string>
+    <string name="manager_launcher_shown">Launcher icon shown.</string>
+    <plurals name="manager_host_running">
+        <item quantity="one">Loaded in %1$d process</item>
+        <item quantity="other">Loaded in %1$d processes</item>
+    </plurals>
+    <plurals name="manager_host_restart">
+        <item quantity="one">%1$d needs a restart</item>
+        <item quantity="other">%1$d need a restart</item>
+    </plurals>
+</resources>

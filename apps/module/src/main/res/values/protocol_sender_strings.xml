@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="host_feature_protocol_sender">Custom protocol sender</string>
+    <string name="host_feature_protocol_sender_description">Send arbitrary raw PB through the current account IM SDK; inspect and save responses.</string>
+    <string name="host_packet_hint">Enter cmd, inboxType and raw PB. Send a complete RequestBody directly, or wrap business PB with an explicit bodyTag. The host supplies authentication. Only Send submits a request.</string>
+    <string name="host_packet_account">Current account: %1$s</string>
+    <string name="host_packet_account_changed">The account changed. Close and reopen the sender.</string>
+    <string name="host_packet_not_ready">The sender is not running. Turn its switch on, restart Douyin and check the feature status page.</string>
+    <string name="host_packet_business_pb">Business PB</string>
+    <string name="host_packet_body_tag">RequestBody field number bodyTag (independent of cmd)</string>
+    <string name="host_packet_payload">Raw bytes in the selected Hex / Base64 encoding; empty PB is allowed</string>
+    <string name="host_packet_paste">Load clipboard</string>
+    <string name="host_packet_clear">Clear PB</string>
+    <string name="host_packet_imported">Full PB loaded: %1$d bytes. Clear to edit again.</string>
+    <string name="host_packet_large_input">The editor accepts 65536 characters. Use Load clipboard for larger PB, up to 4 MiB.</string>
+    <string name="host_packet_empty_clipboard">No text on the clipboard.</string>
+    <string name="host_packet_preview">RequestBody to send: %1$d bytes (first 256 bytes previewed below)</string>
+    <string name="host_packet_send">Send</string>
+    <string name="host_packet_waiting">Working…</string>
+    <string name="host_packet_close">Close</string>
+    <string name="host_packet_pending_hint">Each click submits once; response timeout is 30 seconds. Closing stops local waiting and cannot undo a submitted request.</string>
+    <string name="host_packet_response">Response received: %1$d bytes, status_code=%2$s</string>
+    <string name="host_packet_response_hint">Preview shows the first 4096 bytes. A response does not imply business success. Save the full PB for responses over 64 KiB.</string>
+    <string name="host_packet_copy_hex">Copy Hex</string>
+    <string name="host_packet_copy_base64">Copy Base64</string>
+    <string name="host_packet_copied">Full response copied.</string>
+    <string name="host_packet_save_response">Save full response PB</string>
+    <string name="host_packet_saved">Saved: %1$s</string>
+    <string name="host_packet_invalid_cmd">cmd must be a positive integer.</string>
+    <string name="host_packet_invalid_inbox">inboxType must be a nonnegative integer.</string>
+    <string name="host_packet_invalid_tag">bodyTag must be between 1 and 536870911.</string>
+    <string name="host_packet_invalid_hex">Hex must contain pairs of hexadecimal characters, with optional whitespace.</string>
+    <string name="host_packet_invalid_base64">Invalid Base64 encoding.</string>
+    <string name="host_packet_invalid_size">The wrapped RequestBody must not exceed 4 MiB.</string>
+    <string name="host_packet_no_account">No Douyin account is signed in, so nothing can be sent.</string>
+</resources>

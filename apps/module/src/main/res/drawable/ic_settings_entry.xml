@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The launcher logo cropped to its bounds, shown in the host's settings row where an adaptive icon would be masked. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="54"
+    android:viewportHeight="54">
+    <group android:translateX="-27" android:translateY="-27">
+        <path android:fillColor="#1C80E2" android:pathData="M32.144,81.060 L32.144,27.180 L45.568,31.817 L45.568,75.944 Z" />
+        <path android:fillColor="#1666DF" android:pathData="M75.856,71.946 L75.856,80.980 L62.350,76.344 L45.488,53.001 L45.488,31.737 Z" />
+        <path android:fillColor="#1847D3" android:pathData="M62.271,32.376 L75.856,26.940 L75.856,71.866 L62.271,54.040 Z" />
+        <path android:fillColor="#2DAAE4" android:pathData="M45.568,52.921 L45.568,31.817 L32.144,27.180 L32.144,35.349 Z" />
+    </group>
+</vector>

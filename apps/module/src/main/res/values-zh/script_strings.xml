@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="script_home_entry">脚本</string>
+    <string name="script_tab_installed">已安装</string>
+    <string name="script_tab_store">商店</string>
+    <string name="script_import_action">导入脚本包</string>
+    <string name="script_docs_action">脚本开发文档</string>
+    <string name="script_close">关闭</string>
+
+    <string name="script_scanning_title">正在读取脚本</string>
+    <string name="script_scanning_message">正在检查已安装的脚本包。</string>
+    <string name="script_none_title">还没有脚本</string>
+    <string name="script_none_message">点击右上角的按钮导入 .nks 脚本包。</string>
+    <string name="script_unavailable_title">脚本不可用</string>
+    <string name="script_unavailable_message">本进程无法打开脚本存储。请从抖音重新打开设置，或查看模块日志。</string>
+    <string name="script_operation_failed">操作失败</string>
+    <string name="script_store_empty_title">脚本商店暂未开放</string>
+    <string name="script_store_empty_message">目前请通过导入脚本包来安装脚本。</string>
+
+    <string name="script_card_readme">说明</string>
+    <string name="script_card_logs">日志</string>
+    <string name="script_card_settings">设置</string>
+    <string name="script_failed_label">运行出错，已停止</string>
+    <string name="script_hold_grant">等待授权</string>
+    <string name="script_hold_safe_mode">安全模式下不运行</string>
+    <string name="script_hold_locked">因异常已锁定，请在调试页解锁</string>
+
+    <string name="script_authorize_title">授权脚本</string>
+    <string name="script_authorization_request">%1$s 请求以下能力，请只授权你信任的脚本。</string>
+    <string name="script_authorize_and_enable">授权并启用</string>
+    <string name="script_authorize">授权</string>
+    <string name="script_revoke_title">撤销授权</string>
+    <string name="script_revoke">撤销</string>
+    <string name="script_revoke_running">%1$s 正在运行，撤销授权后会停止。</string>
+    <string name="script_revoke_stopped">撤销后，%1$s 需要重新授权才能运行。</string>
+    <string name="script_no_reason">脚本没有说明用途。</string>
+
+    <string name="script_permission_network">网络访问</string>
+    <string name="script_permission_network_any">任意网站</string>
+    <string name="script_permission_network_private">包括局域网</string>
+    <string name="script_permission_java">调用抖音自身代码</string>
+    <string name="script_permission_hook">拦截抖音方法</string>
+    <string name="script_permission_external_files">你选择的文件</string>
+    <string name="script_permission_host_files">抖音私有文件</string>
+    <string name="script_permission_douyin_account">你的抖音账号信息</string>
+    <string name="script_permission_douyin_messaging">以你的身份发送消息</string>
+    <string name="script_permission_separator">、</string>
+
+    <string name="script_readme_loading">正在加载…</string>
+    <string name="script_readme_empty">该脚本没有说明文档。</string>
+    <string name="script_readme_failed">无法读取说明文档。</string>
+
+    <string name="script_logs_title">%1$s 的日志</string>
+    <string name="script_logs_clear">清空</string>
+    <string name="script_logs_empty">暂无日志。</string>
+
+    <string name="script_import_title">导入脚本</string>
+    <string name="script_import_inspecting">正在检查脚本包…</string>
+    <string name="script_import_failed_title">导入失败</string>
+    <string name="script_import_install">安装</string>
+    <string name="script_import_update">更新</string>
+    <string name="script_import_reinstall">重新安装</string>
+    <string name="script_import_downgrade">降级安装</string>
+    <string name="script_import_installing">正在安装…</string>
+    <string name="script_import_new_summary">新脚本</string>
+    <string name="script_import_update_summary">更新已安装的 %1$s 版本</string>
+    <string name="script_import_reinstall_summary">已安装相同版本</string>
+    <string name="script_import_downgrade_summary">低于已安装的 %1$s 版本</string>
+    <string name="script_import_error_package">该文件不是有效的脚本包。</string>
+    <string name="script_import_error_manifest">脚本包的清单无效。</string>
+    <string name="script_import_error_schema">脚本包的配置定义无效。</string>
+    <string name="script_import_error_api">该脚本需要更新版本的模块。</string>
+    <string name="script_import_error_size">脚本包过大。</string>
+    <string name="script_import_error_host">该脚本是为其他应用编写的。</string>
+    <string name="script_import_error_native">本进程无法使用脚本包读取器。</string>
+    <string name="script_import_error_other">无法安装该脚本包。</string>
+
+    <string name="script_settings_config_section">配置</string>
+    <string name="script_settings_config_entry">脚本配置</string>
+    <string name="script_settings_config_count">%1$d 项配置</string>
+    <string name="script_settings_no_config">该脚本没有配置项</string>
+    <string name="script_settings_permissions_section">权限</string>
+    <string name="script_settings_declared">声明的能力</string>
+    <string name="script_settings_no_extra">无</string>
+    <string name="script_settings_dangerous">敏感能力授权</string>
+    <string name="script_settings_dangerous_granted">已授权 %1$d 项，点击撤销</string>
+    <string name="script_settings_dangerous_pending">%1$d 项等待授权</string>
+    <string name="script_settings_management_section">管理</string>
+    <string name="script_settings_delete">删除脚本</string>
+    <string name="script_settings_delete_summary">移除脚本及其配置和数据</string>
+    <string name="script_delete_title">删除脚本</string>
+    <string name="script_delete_message">删除 %1$s？其配置和数据也会一并删除。</string>
+    <string name="script_delete_confirm">删除</string>
+    <string name="script_deleting">正在删除…</string>
+
+    <string name="script_config_unset">未设置</string>
+    <string name="script_config_invalid_integer">请输入整数。</string>
+    <string name="script_config_invalid_number">请输入数字。</string>
+    <string name="script_config_too_long">最多 %1$d 个字符。</string>
+    <string name="script_config_below_min">不能小于 %1$s。</string>
+    <string name="script_config_above_max">不能大于 %1$s。</string>
+    <string name="script_config_invalid">该值不符合此项要求。</string>
+</resources>

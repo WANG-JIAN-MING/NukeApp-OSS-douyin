@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 先读这个：出问题时
+    url: https://github.com/dartcv/Nuke-OSS#出问题时
+    about: README 里的排查步骤。提问之前请先照着检查一遍，很多问题在那里就能解决。
+  - name: 脚本怎么写
+    url: https://github.com/dartcv/Nuke-OSS/tree/dev/sdk/script-sdk
+    about: 写脚本、检查和打包的说明在脚本 SDK 的 README 里。

@@ -1,0 +1,28 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- The module screen reads the scoped hosts' install state and ABI; keep in step with HostScope. -->
+    <queries>
+        <package android:name="io.github.nuke.oss.fixture" />
+        <package android:name="com.ss.android.ugc.aweme" />
+    </queries>
+    <application android:label="NukeApp-OSS" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round" android:description="@string/module_description" android:allowBackup="false"
+        android:localeConfig="@xml/locales_config"
+        android:theme="@android:style/Theme.Material.Light.NoActionBar">
+        <meta-data android:name="xposedmodule" android:value="true" />
+        <meta-data android:name="xposedminversion" android:value="82" />
+        <meta-data android:name="xposeddescription" android:value="NukeApp-OSS XP82, API 102 and Zygisk Hook fixture" />
+        <meta-data android:name="xposedscope" android:resource="@array/xposed_scope" />
+        <!-- Xposed managers open the module through MODULE_SETTINGS, so it stays reachable with the launcher icon hidden. -->
+        <activity android:name=".MainActivity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="de.robv.android.xposed.category.MODULE_SETTINGS" />
+            </intent-filter>
+        </activity>
+        <activity-alias android:name=".MainActivityLauncher" android:targetActivity=".MainActivity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+    </application>
+</manifest>

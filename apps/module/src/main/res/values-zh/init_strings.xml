@@ -1,0 +1,16 @@
+<resources>
+    <string name="init_title">初始化 Nuke</string>
+    <string name="init_intro">当前版本的应用尚未分析。请先选择以下选项，之后可以在 Nuke 设置中修改。</string>
+    <string name="init_bug_reports">匿名错误报告</string>
+    <string name="init_bug_reports_description">允许报告失效的功能和查找结果及应用版本，不包含账号数据或聊天内容。当前版本还没有报告服务，不会发送任何内容。</string>
+    <string name="init_continue">继续</string>
+    <string name="init_analyzing">正在进行 Dex 分析[%1$d/%2$d]</string>
+    <string name="init_failed">Dex 分析失败：%1$s</string>
+    <string name="init_retry">重试</string>
+    <string name="init_close">关闭</string>
+    <string name="init_restarting">Dex 分析完成，正在重启宿主应用。</string>
+    <string name="init_restarting_failed">Dex 分析完成，%2$d 项中有 %1$d 项未匹配，相关功能保持关闭，正在重启宿主应用。</string>
+    <string name="init_analysis_title">正在分析 Dex</string>
+    <string name="init_step_native">正在检查 Native 运行环境</string>
+    <string name="init_step_environment">正在初始化 Dex 分析环境[%1$d/%2$d]</string>
+</resources>

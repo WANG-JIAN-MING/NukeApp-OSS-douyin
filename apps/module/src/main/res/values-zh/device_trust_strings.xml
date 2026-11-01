@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="device_trust_title">设备可信</string>
+    <string name="device_trust_avatar_description">查看设备可信检测</string>
+    <string name="device_trust_intro">只读地检查这台设备和本应用自己的进程。能 Hook 系统的工具可能让结果失真，所以结果只作参考。这里的内容不会发送到任何地方。</string>
+    <string name="device_trust_loading">正在检测…</string>
+    <string name="device_trust_unavailable">检测没能运行：%1$s</string>
+    <string name="device_trust_close">关闭</string>
+    <string name="device_trust_verdict_trusted">没有发现问题</string>
+    <string name="device_trust_verdict_caution">系统的某项保护被削弱了</string>
+    <string name="device_trust_verdict_alert">发现了调试器、注入或插桩工具</string>
+    <string name="device_trust_verdict_unknown">没能检测任何项目</string>
+    <string name="device_trust_level_ok">正常</string>
+    <string name="device_trust_level_info">提示</string>
+    <string name="device_trust_level_warn">警告</string>
+    <string name="device_trust_level_alert">告警</string>
+    <string name="device_trust_level_unknown">未知</string>
+    <string name="device_trust_check_debugger">调试器</string>
+    <string name="device_trust_check_injection">库注入</string>
+    <string name="device_trust_check_descriptors">调试与内存转储句柄</string>
+    <string name="device_trust_check_root">Root（su）</string>
+    <string name="device_trust_check_bootloader">Bootloader 与验证启动</string>
+    <string name="device_trust_check_build">系统构建</string>
+    <string name="device_trust_check_emulator">模拟器</string>
+    <string name="device_trust_check_adbd">调试桥（adbd）</string>
+    <string name="device_trust_check_signature_path">签名校验路径</string>
+    <string name="device_trust_check_selinux_policy">SELinux 策略</string>
+    <string name="device_trust_check_kernel_exposure">内核暴露面</string>
+    <string name="device_trust_check_mounts">挂载</string>
+    <string name="device_trust_check_maps_tools">内存里的 Hook 与 root 工具</string>
+    <string name="device_trust_check_maps_memory">内存映射</string>
+    <string name="device_trust_check_network">网络面</string>
+    <string name="device_trust_tripwire">绊线</string>
+    <string name="device_trust_tripwire_clear">未触发</string>
+    <string name="device_trust_tripwire_tripped">已触发（%1$d）</string>
+    <string name="device_trust_flags">标志位</string>
+    <string name="device_trust_flags_none">没有置位</string>
+    <string name="device_trust_flags_hint">红色的标志位触发了绊线。弱证据只有和硬证据同时出现才算数。</string>
+    <string name="device_trust_flag_class_hard">硬证据</string>
+    <string name="device_trust_flag_class_weak">弱证据</string>
+    <string name="device_trust_flag_class_env">设备状态</string>
+    <string name="device_trust_flag_class_note">备注</string>
+</resources>

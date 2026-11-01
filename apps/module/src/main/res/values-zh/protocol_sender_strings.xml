@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="host_feature_protocol_sender">自定义协议发送器</string>
+    <string name="host_feature_protocol_sender_description">编辑任意原始 PB，通过当前账号的 IM SDK 发送，查看并保存响应。</string>
+    <string name="host_packet_hint">填写 cmd、inboxType 和原始 PB。RequestBody 直接发送；业务 PB 需填写独立的 bodyTag。外层认证由宿主封装，仅点击发送才会提交。</string>
+    <string name="host_packet_account">当前账号：%1$s</string>
+    <string name="host_packet_account_changed">账号已切换，请关闭后重新打开发送器。</string>
+    <string name="host_packet_not_ready">发送器未运行：请打开功能开关并重启抖音，再到功能状态页查看原因。</string>
+    <string name="host_packet_business_pb">业务 PB</string>
+    <string name="host_packet_body_tag">RequestBody 字段号 bodyTag（与 cmd 独立）</string>
+    <string name="host_packet_payload">原始字节，按所选 Hex / Base64 编码填写；允许空 PB</string>
+    <string name="host_packet_paste">从剪贴板载入</string>
+    <string name="host_packet_clear">清空 PB</string>
+    <string name="host_packet_imported">已载入完整 PB：%1$d 字节。清空后可重新编辑。</string>
+    <string name="host_packet_large_input">编辑框最多 65536 字符；较大 PB 请使用“从剪贴板载入”，支持最多 4 MiB。</string>
+    <string name="host_packet_empty_clipboard">剪贴板没有文本。</string>
+    <string name="host_packet_preview">待发送 RequestBody：%1$d 字节（下方预览前 256 字节）</string>
+    <string name="host_packet_send">发送</string>
+    <string name="host_packet_waiting">处理中…</string>
+    <string name="host_packet_close">关闭</string>
+    <string name="host_packet_pending_hint">每次点击仅提交一次；等待响应最长 30 秒。关闭只停止本地等待，无法撤销已提交的请求。</string>
+    <string name="host_packet_response">收到响应：%1$d 字节，status_code=%2$s</string>
+    <string name="host_packet_response_hint">预览前 4096 字节。收到响应不代表业务成功；大于 64 KiB 的响应请保存完整 PB。</string>
+    <string name="host_packet_copy_hex">复制 Hex</string>
+    <string name="host_packet_copy_base64">复制 Base64</string>
+    <string name="host_packet_copied">已复制完整响应。</string>
+    <string name="host_packet_save_response">保存完整响应 PB</string>
+    <string name="host_packet_saved">已保存：%1$s</string>
+    <string name="host_packet_invalid_cmd">cmd 必须是大于 0 的整数。</string>
+    <string name="host_packet_invalid_inbox">inboxType 必须是非负整数。</string>
+    <string name="host_packet_invalid_tag">bodyTag 必须在 1～536870911 之间。</string>
+    <string name="host_packet_invalid_hex">Hex 只能包含十六进制字符和空白，且必须每两个字符表示一个字节。</string>
+    <string name="host_packet_invalid_base64">Base64 格式无效。</string>
+    <string name="host_packet_invalid_size">封装后的 RequestBody 不能超过 4 MiB。</string>
+    <string name="host_packet_no_account">未登录抖音账号，无法发送。</string>
+</resources>

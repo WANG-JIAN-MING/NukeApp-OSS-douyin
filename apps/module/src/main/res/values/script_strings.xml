@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="script_home_entry">Scripts</string>
+    <string name="script_tab_installed">Installed</string>
+    <string name="script_tab_store">Store</string>
+    <string name="script_import_action">Import a script package</string>
+    <string name="script_docs_action">Script documentation</string>
+    <string name="script_close">Close</string>
+
+    <string name="script_scanning_title">Reading scripts</string>
+    <string name="script_scanning_message">Checking the installed script packages.</string>
+    <string name="script_none_title">No scripts yet</string>
+    <string name="script_none_message">Import a .nks script package with the button at the top right.</string>
+    <string name="script_unavailable_title">Scripts unavailable</string>
+    <string name="script_unavailable_message">The script store could not be opened in this process. Reopen the settings from Douyin, or see the module log.</string>
+    <string name="script_operation_failed">Operation failed</string>
+    <string name="script_store_empty_title">The store is not open yet</string>
+    <string name="script_store_empty_message">Install scripts by importing their packages for now.</string>
+
+    <string name="script_card_readme">Read me</string>
+    <string name="script_card_logs">Logs</string>
+    <string name="script_card_settings">Settings</string>
+    <string name="script_failed_label">Stopped with an error</string>
+    <string name="script_hold_grant">Waiting for authorization</string>
+    <string name="script_hold_safe_mode">Not running in safe mode</string>
+    <string name="script_hold_locked">Locked after a failure; unlock it on the debug page</string>
+
+    <string name="script_authorize_title">Authorize script</string>
+    <string name="script_authorization_request">%1$s asks for the following capabilities. Only authorize scripts you trust.</string>
+    <string name="script_authorize_and_enable">Authorize and enable</string>
+    <string name="script_authorize">Authorize</string>
+    <string name="script_revoke_title">Revoke authorization</string>
+    <string name="script_revoke">Revoke</string>
+    <string name="script_revoke_running">%1$s is running and stops once its authorization is revoked.</string>
+    <string name="script_revoke_stopped">%1$s will need to be authorized again before it can run.</string>
+    <string name="script_no_reason">The script gives no reason.</string>
+
+    <string name="script_permission_network">Network access</string>
+    <string name="script_permission_network_any">Any website</string>
+    <string name="script_permission_network_private">Including your local network</string>
+    <string name="script_permission_java">Calling Douyin\'s own code</string>
+    <string name="script_permission_hook">Intercepting Douyin\'s methods</string>
+    <string name="script_permission_external_files">Files you pick</string>
+    <string name="script_permission_host_files">Douyin\'s private files</string>
+    <string name="script_permission_douyin_account">Your Douyin account</string>
+    <string name="script_permission_douyin_messaging">Sending messages as you</string>
+    <string name="script_permission_separator">, </string>
+
+    <string name="script_readme_loading">Loading…</string>
+    <string name="script_readme_empty">This script has no README.</string>
+    <string name="script_readme_failed">The README could not be read.</string>
+
+    <string name="script_logs_title">%1$s logs</string>
+    <string name="script_logs_clear">Clear</string>
+    <string name="script_logs_empty">No logs yet.</string>
+
+    <string name="script_import_title">Import script</string>
+    <string name="script_import_inspecting">Checking the package…</string>
+    <string name="script_import_failed_title">Import failed</string>
+    <string name="script_import_install">Install</string>
+    <string name="script_import_update">Update</string>
+    <string name="script_import_reinstall">Reinstall</string>
+    <string name="script_import_downgrade">Downgrade</string>
+    <string name="script_import_installing">Installing…</string>
+    <string name="script_import_new_summary">A new script</string>
+    <string name="script_import_update_summary">Updates the installed version %1$s</string>
+    <string name="script_import_reinstall_summary">The same version is already installed</string>
+    <string name="script_import_downgrade_summary">Older than the installed version %1$s</string>
+    <string name="script_import_error_package">The file is not a valid script package.</string>
+    <string name="script_import_error_manifest">The package\'s manifest is invalid.</string>
+    <string name="script_import_error_schema">The package\'s settings schema is invalid.</string>
+    <string name="script_import_error_api">The script needs a newer version of this module.</string>
+    <string name="script_import_error_size">The package is too large.</string>
+    <string name="script_import_error_host">The script is made for another app.</string>
+    <string name="script_import_error_native">The package reader is not available in this process.</string>
+    <string name="script_import_error_other">The package could not be installed.</string>
+
+    <string name="script_settings_config_section">Settings</string>
+    <string name="script_settings_config_entry">Script settings</string>
+    <string name="script_settings_config_count">%1$d settings</string>
+    <string name="script_settings_no_config">This script has no settings</string>
+    <string name="script_settings_permissions_section">Permissions</string>
+    <string name="script_settings_declared">Declared</string>
+    <string name="script_settings_no_extra">None</string>
+    <string name="script_settings_dangerous">Sensitive capabilities</string>
+    <string name="script_settings_dangerous_granted">%1$d authorized; tap to revoke</string>
+    <string name="script_settings_dangerous_pending">%1$d waiting for authorization</string>
+    <string name="script_settings_management_section">Manage</string>
+    <string name="script_settings_delete">Delete script</string>
+    <string name="script_settings_delete_summary">Removes the script with its settings and data</string>
+    <string name="script_delete_title">Delete script</string>
+    <string name="script_delete_message">Delete %1$s? Its settings and data are removed too.</string>
+    <string name="script_delete_confirm">Delete</string>
+    <string name="script_deleting">Deleting…</string>
+
+    <string name="script_config_unset">Not set</string>
+    <string name="script_config_invalid_integer">Enter a whole number.</string>
+    <string name="script_config_invalid_number">Enter a number.</string>
+    <string name="script_config_too_long">At most %1$d characters.</string>
+    <string name="script_config_below_min">At least %1$s.</string>
+    <string name="script_config_above_max">At most %1$s.</string>
+    <string name="script_config_invalid">This value does not fit the setting.</string>
+</resources>

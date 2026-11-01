@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="host_pet_notice">After Douyin starts, open a chosen friend\'s native pet page once so the pet service is ready. Automatic mode gives only free food; a chosen food is given only when paid food is allowed and its price is within the limit, otherwise that friend is skipped. It works only while Douyin is running and an account is signed in, and sends no messages.</string>
+    <string name="host_pet_disabled">This feature is off. Switch it on in the list after saving.</string>
+    <string name="host_pet_friends_title">Choose friends to feed</string>
+    <string name="host_pet_selected">%1$d friends chosen</string>
+    <string name="host_pet_interval">Check every</string>
+    <string name="host_pet_minutes">%1$d min</string>
+    <string name="host_pet_food">Food</string>
+    <string name="host_pet_food_title">Choose food</string>
+    <string name="host_pet_food_auto">Automatic (free food)</string>
+    <string name="host_pet_food_auto_hint">Only food the service marks free is given; paid food stays off in this mode.</string>
+    <string name="host_pet_food_saved">Saved food (%1$s)</string>
+    <string name="host_pet_free">Free</string>
+    <string name="host_pet_price">%1$d stars</string>
+    <string name="host_pet_allow_paid">Allow paid food</string>
+    <string name="host_pet_allow_paid_hint">Only the chosen food is given, and only within the price limit.</string>
+    <string name="host_pet_price_cap">Price limit per feeding</string>
+    <string name="host_pet_price_cap_hint">A food that costs more than this is skipped.</string>
+    <string name="host_pet_price_cap_summary">Price limit: %1$d stars per feeding</string>
+    <string name="host_pet_round_maximum">At most %2$s stars per round for %1$d friends.</string>
+    <string name="host_pet_source">Read foods from</string>
+    <string name="host_pet_refresh">Read foods again</string>
+    <string name="host_pet_loading">Reading foods…</string>
+    <string name="host_pet_load_failed">Could not read the foods: %1$s</string>
+    <string name="host_pet_empty">This pet offers no food.</string>
+    <string name="host_pet_missing">The saved food is not offered by this pet any more.</string>
+    <string name="host_pet_need_friend">Choose a friend first: the foods are read from a friend\'s pet.</string>
+    <string name="host_pet_no_console">Reading foods is not available here.</string>
+    <string name="host_pet_problem_limit">Choose at most 100 friends.</string>
+    <string name="host_pet_problem_invalid_price">Enter the price limit as a whole number.</string>
+    <string name="host_pet_problem_paid">This food costs stars: allow paid food to use it.</string>
+    <string name="host_pet_problem_price">The price limit is below this food\'s price (%1$d).</string>
+</resources>

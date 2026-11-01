@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="host_pet_notice">抖音启动后，需先打开一次所选好友的原生小火人页面，让小火人服务就绪。自动模式只喂免费食物；指定食物只有在允许付费且价格不超过上限时才会喂，否则跳过该好友。仅在抖音运行且已登录账号时工作，不会发送任何消息。</string>
+    <string name="host_pet_disabled">功能目前未开启。保存后请在列表里打开它。</string>
+    <string name="host_pet_friends_title">选择喂食的好友</string>
+    <string name="host_pet_selected">已选择 %1$d 位好友</string>
+    <string name="host_pet_interval">检查间隔</string>
+    <string name="host_pet_minutes">%1$d 分钟</string>
+    <string name="host_pet_food">食物</string>
+    <string name="host_pet_food_title">选择食物</string>
+    <string name="host_pet_food_auto">自动选择免费食物</string>
+    <string name="host_pet_food_auto_hint">只用服务端明确标为免费的食物；此模式下不会付费。</string>
+    <string name="host_pet_food_saved">已保存的食物（%1$s）</string>
+    <string name="host_pet_free">免费</string>
+    <string name="host_pet_price">%1$d 火星</string>
+    <string name="host_pet_allow_paid">允许付费食物</string>
+    <string name="host_pet_allow_paid_hint">只喂选中的食物，且价格不超过上限。</string>
+    <string name="host_pet_price_cap">每次喂食的价格上限</string>
+    <string name="host_pet_price_cap_hint">价格超过上限的食物会被跳过。</string>
+    <string name="host_pet_price_cap_summary">价格上限：每次 %1$d 火星</string>
+    <string name="host_pet_round_maximum">%1$d 位好友，每轮最多 %2$s 火星。</string>
+    <string name="host_pet_source">从谁的小火人读取</string>
+    <string name="host_pet_refresh">重新读取食物</string>
+    <string name="host_pet_loading">正在读取食物…</string>
+    <string name="host_pet_load_failed">读取食物失败：%1$s</string>
+    <string name="host_pet_empty">这只小火人没有可选的食物。</string>
+    <string name="host_pet_missing">已保存的食物当前不在这只小火人的列表里。</string>
+    <string name="host_pet_need_friend">先选择好友：食物列表取自好友的小火人。</string>
+    <string name="host_pet_no_console">这里无法读取食物。</string>
+    <string name="host_pet_problem_limit">最多选择 100 位好友。</string>
+    <string name="host_pet_problem_invalid_price">价格上限请填整数。</string>
+    <string name="host_pet_problem_paid">这个食物要花火星：请先允许付费食物。</string>
+    <string name="host_pet_problem_price">价格上限低于这个食物的价格（%1$d）。</string>
+</resources>

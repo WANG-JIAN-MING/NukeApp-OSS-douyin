@@ -1,0 +1,35 @@
+{
+  "toolchain": {
+    "ndk": "29.0.13113456",
+    "cmake": "4.1.2",
+    "api": 27
+  },
+  "repositories": {
+    "lsplant": {
+      "url": "https://github.com/LSPosed/LSPlant.git",
+      "revision": "d8b5d1dbb664abc606644036822e4bb64547edf6",
+      "version": "master 2026-09-09, after v6.4"
+    },
+    "dobby": {
+      "url": "https://github.com/jmpews/Dobby.git",
+      "revision": "cfb34699e3785d3b1bef962892fe986ff7f157aa"
+    },
+    "xdl": {
+      "url": "https://github.com/hexhacking/xDL.git",
+      "revision": "1e0b6254165a2ddcbd32f77a371700c69155acf8"
+    },
+    "zygisk": {
+      "url": "https://github.com/topjohnwu/zygisk-module-sample.git",
+      "revision": "7bb941ac8edfcffd1d23761e401c45ca95409dc1",
+      "version": "API 4"
+    },
+    "lsplant/lsplant/src/main/jni/external/dex_builder": {
+      "url": "https://github.com/LSPosed/DexBuilder.git",
+      "revision": "ac7fb2230954ee311808bad469b0db501f31bfb8"
+    },
+    "lsplant/lsplant/src/main/jni/external/dex_builder/external/parallel_hashmap": {
+      "url": "https://github.com/greg7mdp/parallel-hashmap.git",
+      "revision": "0cd57d29a959256ed66b2afdd1009928fc625d09"
+    }
+  }
+}

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="device_trust_title">Device trust</string>
+    <string name="device_trust_avatar_description">Show the device trust checks</string>
+    <string name="device_trust_intro">Read-only checks of this device and of this app\'s own process. A tool that hooks the system can mislead them, so treat the result as a hint. Nothing here is sent anywhere.</string>
+    <string name="device_trust_loading">Checking…</string>
+    <string name="device_trust_unavailable">The checks could not run: %1$s</string>
+    <string name="device_trust_close">Close</string>
+    <string name="device_trust_verdict_trusted">No problem found</string>
+    <string name="device_trust_verdict_caution">A protection of the system is weakened</string>
+    <string name="device_trust_verdict_alert">A debugger, an injection or an instrumentation tool was found</string>
+    <string name="device_trust_verdict_unknown">Nothing could be checked</string>
+    <string name="device_trust_level_ok">Normal</string>
+    <string name="device_trust_level_info">Notice</string>
+    <string name="device_trust_level_warn">Warning</string>
+    <string name="device_trust_level_alert">Alert</string>
+    <string name="device_trust_level_unknown">Unknown</string>
+    <string name="device_trust_check_debugger">Debugger</string>
+    <string name="device_trust_check_injection">Library injection</string>
+    <string name="device_trust_check_frida" translatable="false">Frida</string>
+    <string name="device_trust_check_descriptors">Debug and dump descriptors</string>
+    <string name="device_trust_check_root">Root (su)</string>
+    <string name="device_trust_check_bootloader">Bootloader and verified boot</string>
+    <string name="device_trust_check_selinux" translatable="false">SELinux</string>
+    <string name="device_trust_check_build">System build</string>
+    <string name="device_trust_check_emulator">Emulator</string>
+    <string name="device_trust_check_adbd">Debug bridge (adbd)</string>
+    <string name="device_trust_check_signature_path">Signature check path</string>
+    <string name="device_trust_check_selinux_policy">SELinux policy</string>
+    <string name="device_trust_check_kernel_exposure">Kernel exposure</string>
+    <string name="device_trust_check_mounts">Mounts</string>
+    <string name="device_trust_check_maps_tools">Hook and root tools in memory</string>
+    <string name="device_trust_check_maps_memory">Memory mappings</string>
+    <string name="device_trust_check_network">Network surface</string>
+    <string name="device_trust_tripwire">Tripwire</string>
+    <string name="device_trust_tripwire_clear">Not tripped</string>
+    <string name="device_trust_tripwire_tripped">Tripped (%1$d)</string>
+    <string name="device_trust_flags">Flags</string>
+    <string name="device_trust_flags_none">None raised</string>
+    <string name="device_trust_flags_hint">Red flags tripped the wire. A weak flag only counts next to a hard one.</string>
+    <string name="device_trust_flag_class_hard">Hard</string>
+    <string name="device_trust_flag_class_weak">Weak</string>
+    <string name="device_trust_flag_class_env">Device state</string>
+    <string name="device_trust_flag_class_note">Notes</string>
+</resources>

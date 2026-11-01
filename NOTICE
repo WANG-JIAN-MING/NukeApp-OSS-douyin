@@ -1,0 +1,9 @@
+NukeApp-OSS
+Copyright 2026 dartcv
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE), except NukePatcher (apps/patcher), which is
+licensed under the GNU General Public License, version 3 (see apps/patcher/LICENSE) because it embeds LSPatch.
+
+The module's native library links LSPlant and DexBuilder statically; both are licensed under the GNU Lesser General Public
+License, version 3. Notices and license texts of all bundled third-party components are in
+apps/module/src/main/resources/third-party and apps/patcher/src/main/resources/third-party.

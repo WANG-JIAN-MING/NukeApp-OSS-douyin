@@ -1,0 +1,106 @@
+name: CI
+
+on:
+  push:
+    branches: [dev, master]
+  pull_request:
+    branches: [dev, master]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  commit-messages:
+    name: Commit messages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check Conventional Commits in English
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          BEFORE_SHA: ${{ github.event.before }}
+          PUSH_SHA: ${{ github.sha }}
+        run: |
+          if [ "$EVENT" = pull_request ]; then
+            range="$BASE_SHA..$HEAD_SHA"
+          elif [ "$BEFORE_SHA" = 0000000000000000000000000000000000000000 ]; then
+            range="$PUSH_SHA~1..$PUSH_SHA"
+          else
+            range="$BEFORE_SHA..$PUSH_SHA"
+          fi
+          python3 tools/check_commit_msg.py --range "$range"
+
+  intake-scripts:
+    name: Intake scripts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test the issue and pull request checks
+        run: node --test .github/scripts/intake.test.cjs
+
+  build:
+    name: Verify (Debug)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Install Android SDK packages
+        run: |
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
+            "platforms;android-37.0" "build-tools;37.0.0" "ndk;29.0.13113456" "cmake;4.1.2"
+
+      - name: Install Rust 1.90.0
+        run: |
+          rustup toolchain install 1.90.0 --profile minimal --component rustfmt --component clippy \
+            --target aarch64-linux-android --target x86_64-linux-android
+          python3 tools/build_rust.py --check
+
+      - name: Cache pinned native sources
+        uses: actions/cache@v4
+        with:
+          path: |
+            build/native/deps
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: deps-${{ hashFiles('apps/module/src/main/cpp/dependencies.lock.json', 'apps/*/src/main/rust/Cargo.lock', 'apps/patcher/lspatch.lock.json') }}
+
+      - name: Verify
+        run: ./gradlew verify --max-workers=1 --console=plain
+
+      - name: Upload Debug APKs
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-apks
+          path: |
+            apps/module/build/outputs/apk/debug/*.apk
+            apps/patcher/build/outputs/apk/debug/*.apk
+            fixtures/host/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+
+      - name: Upload reports
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: |
+            **/build/reports/**
+            **/build/test-results/**
+          if-no-files-found: ignore

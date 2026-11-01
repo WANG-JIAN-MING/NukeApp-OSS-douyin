@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="host_streak_days_hint">Type the number of days to show for a chat. Leave a box empty to keep the real count. Only you see these numbers and nothing is sent. They show after Douyin restarts.</string>
+    <string name="host_streak_days_all">Every chat</string>
+    <string name="host_streak_days_all_hint">Used for each chat that has no number of its own.</string>
+    <string name="host_streak_days_placeholder">Real</string>
+    <string name="host_streak_days_real">Real streak: %1$d days</string>
+    <string name="host_streak_days_none">No streak</string>
+    <string name="host_streak_days_set_count">%1$d chats have their own number</string>
+    <string name="host_streak_days_other">Not in your friend list</string>
+</resources>

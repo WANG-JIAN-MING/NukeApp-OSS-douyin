@@ -1,0 +1,42 @@
+{
+  "name": "@nuke-oss/script-sdk",
+  "version": "1.0.0",
+  "description": "Types, validation and packaging for NukeApp-OSS scripts",
+  "type": "module",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dartcv/Nuke-OSS.git",
+    "directory": "sdk/script-sdk"
+  },
+  "engines": {
+    "node": ">=22.2"
+  },
+  "types": "./types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "default": "./lib/index.js"
+    }
+  },
+  "bin": {
+    "nuke-script": "bin/nuke-script.js"
+  },
+  "files": [
+    "bin",
+    "lib",
+    "types",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "node --test \"test/**/*.test.js\""
+  },
+  "peerDependencies": {
+    "esbuild": ">=0.25.0"
+  },
+  "peerDependenciesMeta": {
+    "esbuild": {
+      "optional": true
+    }
+  }
+}

@@ -1,0 +1,113 @@
+name: 问题反馈
+description: 功能没生效、闪退、入口不出现等问题。
+labels: [bug]
+title: "[问题] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        提问前请先看 README 的「出问题时」。请按下面每一项如实填写，缺项的议题会被自动关闭，补全后会自动重新打开。
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: 问题描述
+      description: 发生了什么？是哪个功能？
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      description: 一步一步写，别人照着做就能看到同样的问题。
+      placeholder: |
+        1. 打开抖音，进入设置里的 NukeApp-OSS
+        2. 打开某某功能
+        3. 强行停止抖音再打开
+        4. ……
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 预期行为
+      description: 你本来期望看到什么？
+    validations:
+      required: true
+
+  - type: input
+    id: douyin-version
+    attributes:
+      label: 抖音版本
+      description: 要写具体的版本号，例如 40.7.0。「最新版」不算版本号。
+    validations:
+      required: true
+
+  - type: input
+    id: module-version
+    attributes:
+      label: 模块版本
+      description: 模块应用首页或设置页里能看到版本号，例如 0.1.0-dev；自己构建的请写提交哈希。
+    validations:
+      required: true
+
+  - type: dropdown
+    id: mode
+    attributes:
+      label: 进入方式
+      options:
+        - Xposed（经典 API 82）
+        - Xposed（现代 libxposed API 102）
+        - Zygisk
+        - 修补（NukePatcher）
+    validations:
+      required: true
+
+  - type: input
+    id: device
+    attributes:
+      label: 系统与设备
+      description: Android 版本和手机型号，例如 Android 16，OnePlus PLQ110。
+    validations:
+      required: true
+
+  - type: input
+    id: framework
+    attributes:
+      label: 框架或 root 方案
+      description: 例如 LSPosed、Vector、ReZygisk、Magisk、KernelSU。没有可以留空。
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: 日志
+      description: 设置页的调试页可以导出失败报告；Zygisk 方式还可以按 README 抓日志。粘贴在这里；确实没有日志，请写明原因。
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: 补充说明
+      description: 截图、录屏链接，或者你已经试过的办法。没有可以留空。
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: 确认事项
+      options:
+        - label: 我搜索过已有的议题，没有找到同样的问题
+          required: true
+        - label: 我用的是最新的构建，问题仍然存在
+          required: true
+        - label: 我修改过设置后强行停止并重新打开过抖音
+          required: true
+        - label: 日志里没有账号、聊天内容等隐私信息，有的我已经删掉
+          required: true

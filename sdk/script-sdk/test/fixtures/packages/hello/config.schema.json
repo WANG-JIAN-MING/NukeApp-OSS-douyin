@@ -1,0 +1,5 @@
+{
+  "fields": [
+    { "key": "greeting", "type": "string", "title": "Greeting", "default": "world", "maxLength": 40 }
+  ]
+}

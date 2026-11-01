@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="host_streak_days_hint">在会话右边的框里填要显示的火花天数，留空就显示真实天数。这些数字只有你自己看得到，不会发送给任何人，重启抖音后生效。</string>
+    <string name="host_streak_days_all">所有会话</string>
+    <string name="host_streak_days_all_hint">没有单独填写天数的会话都显示这个数字。</string>
+    <string name="host_streak_days_placeholder">真实</string>
+    <string name="host_streak_days_real">真实火花：%1$d 天</string>
+    <string name="host_streak_days_none">没有火花</string>
+    <string name="host_streak_days_set_count">已单独设置 %1$d 个会话</string>
+    <string name="host_streak_days_other">不在好友列表里</string>
+</resources>
