@@ -39,6 +39,30 @@ class PlaybackFeaturesTest : HookHarness() {
         assertEquals(1, posted.size)
     }
 
+    class RightBar
+
+    @Test fun `the switch button turns Douyin's autoplay off and on`() {
+        posted.clear()
+        val ui = RecordingAutoPlayButton()
+        enable(KeepAutoPlayOn(
+            loader, FeedEvents(resolver(), loader), ManualScheduler(), { ui }, values(KeepAutoPlayOn.ID, KeepAutoPlayOn.OPTIONS, "button" to true),
+            AutoPlayModel::class.java.name, FakeLiveData::class.java.name, RightBar::class.java.name,
+        ))
+        val constructor = AutoPlayModel::class.java.getDeclaredConstructor(String::class.java)
+        backend.call(constructor, null, "a")
+        backend.call(RightBar::class.java.getDeclaredConstructor())
+        val button = ui.attached.single()
+        button.onClick()
+        assertEquals(listOf<Any?>(true, false), posted)
+        assertFalse(button.active())
+        // A view model made while the switch is off does not turn autoplay back on.
+        backend.call(constructor, null, "b")
+        assertEquals(listOf<Any?>(true, false, false), posted)
+        button.onClick()
+        assertEquals(listOf<Any?>(true, false, false, true), posted)
+        assertEquals(listOf(false, true), ui.updates)
+    }
+
     @Test fun `two live data getters make the autoplay setting ambiguous`() {
         failsToInstall(autoplay(TwoLiveDataModel::class.java), "found 2")
     }

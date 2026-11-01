@@ -192,6 +192,75 @@ class FeedEventFeaturesTest : HookHarness() {
         assertEquals(listOf(1), pager.moves)
     }
 
+    class RightBar
+
+    @Test fun `the switch button turns the module scheme off and on`() {
+        val events = events(FeedQueries.PLAY_PROGRESS to listOf(progress))
+        val ui = RecordingAutoPlayButton()
+        enable(KeepAutoPlayOn(
+            loader, events, scheduler, { ui }, values(KeepAutoPlayOn.ID, KeepAutoPlayOn.OPTIONS, "scheme" to KeepAutoPlayOn.MODULE, "button" to true),
+            rightBarName = RightBar::class.java.name,
+        ))
+        backend.call(RightBar::class.java.getDeclaredConstructor())
+        val button = ui.attached.single()
+        assertTrue(button.active())
+        val pager = Pager(PagerAdapter(listOf(Aweme("a"), Aweme("b"), Aweme("c"))))
+        backend.call(select, pager, 0, true, false, 0)
+        backend.call(play, Engine())
+        button.onClick()
+        assertFalse(button.active())
+        assertEquals(listOf(false), ui.updates)
+        backend.call(progress, Progress(), "a", 28_000L, 30_000L)
+        scheduler.advance(5_000)
+        assertTrue(pager.moves.isEmpty())
+        button.onClick()
+        assertTrue(button.active())
+        backend.call(progress, Progress(), "a", 28_500L, 30_000L)
+        scheduler.advance(5_000)
+        assertEquals(listOf(1), pager.moves)
+    }
+
+    @Test fun `a switch tapped while a move is queued cancels it`() {
+        val events = events(FeedQueries.PLAY_PROGRESS to listOf(progress))
+        val ui = RecordingAutoPlayButton()
+        enable(KeepAutoPlayOn(
+            loader, events, scheduler, { ui }, values(KeepAutoPlayOn.ID, KeepAutoPlayOn.OPTIONS, "scheme" to KeepAutoPlayOn.MODULE, "button" to true),
+            rightBarName = RightBar::class.java.name,
+        ))
+        backend.call(RightBar::class.java.getDeclaredConstructor())
+        val pager = Pager(PagerAdapter(listOf(Aweme("a"), Aweme("b"))))
+        backend.call(select, pager, 0, true, false, 0)
+        backend.call(play, Engine())
+        backend.call(progress, Progress(), "a", 28_000L, 30_000L)
+        ui.attached.single().onClick()
+        scheduler.advance(5_000)
+        assertTrue(pager.moves.isEmpty())
+    }
+
+    @Test fun `no button is added unless the option is on`() {
+        val ui = RecordingAutoPlayButton()
+        enable(KeepAutoPlayOn(
+            loader, events(FeedQueries.PLAY_PROGRESS to listOf(progress)), scheduler, { ui },
+            values(KeepAutoPlayOn.ID, KeepAutoPlayOn.OPTIONS, "scheme" to KeepAutoPlayOn.MODULE), rightBarName = RightBar::class.java.name,
+        ))
+        backend.call(RightBar::class.java.getDeclaredConstructor())
+        assertTrue(ui.attached.isEmpty())
+    }
+
+    @Test fun `a button kept after the feature is turned off does nothing`() {
+        val ui = RecordingAutoPlayButton()
+        val feature = KeepAutoPlayOn(
+            loader, events(FeedQueries.PLAY_PROGRESS to listOf(progress)), scheduler, { ui },
+            values(KeepAutoPlayOn.ID, KeepAutoPlayOn.OPTIONS, "scheme" to KeepAutoPlayOn.MODULE, "button" to true), rightBarName = RightBar::class.java.name,
+        )
+        enable(feature)
+        backend.call(RightBar::class.java.getDeclaredConstructor())
+        disable(feature)
+        ui.attached.single().onClick()
+        assertTrue(ui.attached.single().active())
+        assertTrue(ui.updates.isEmpty())
+    }
+
     @Test fun `a pause or a new video stops the queued move`() {
         val events = events(FeedQueries.PLAY_PROGRESS to listOf(progress))
         enable(KeepAutoPlayOn(loader, events, scheduler, { RecordingAutoPlayButton() }, values(KeepAutoPlayOn.ID, KeepAutoPlayOn.OPTIONS, "scheme" to KeepAutoPlayOn.MODULE)))
