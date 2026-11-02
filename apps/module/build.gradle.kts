@@ -78,6 +78,9 @@ val prepareNativeLibraries = tasks.register<PrepareNativeLibraries>("prepareNati
 android {
     namespace = "io.github.nuke.oss"
     compileSdk = 37
+    // The NDK tools/build_native.py builds with, so AGP finds its strip tool: without it a machine that has only this NDK ships
+    // every library with its debug symbols.
+    ndkVersion = "29.0.13113456"
     defaultConfig {
         minSdk = 27
         ndk { abiFilters += nativeAbis }

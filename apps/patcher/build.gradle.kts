@@ -78,6 +78,9 @@ val releaseSigning = rootProject.extra["releaseSigning"] as Map<String, Any>?
 android {
     namespace = "io.github.nuke.oss.patcher"
     compileSdk = 37
+    // The NDK tools/build_native.py builds with, so AGP finds its strip tool: without it a machine that has only this NDK ships
+    // every library with its debug symbols.
+    ndkVersion = "29.0.13113456"
     defaultConfig {
         applicationId = "io.github.nuke.oss.patcher"
         minSdk = 28
