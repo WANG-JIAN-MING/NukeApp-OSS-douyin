@@ -202,7 +202,8 @@ jobs:
           media[-1].update({"caption": caption, "parse_mode": "MarkdownV2"})
           command = ["curl", "--fail-with-body", "--silent", "--show-error",
                      f"https://api.telegram.org/bot{os.environ['BOT_TOKEN']}/sendMediaGroup",
-                     "-F", f"chat_id={os.environ['CHAT_ID']}", "-F", f"media={json.dumps(media)}"]
+                     # --form-string: -F would cut the JSON at the first ';' of the caption.
+                     "--form-string", f"chat_id={os.environ['CHAT_ID']}", "--form-string", f"media={json.dumps(media)}"]
           for i, path in enumerate(files):
               command += ["-F", f"file{i}=@{path}"]
           result = subprocess.run(command, capture_output=True, text=True)
