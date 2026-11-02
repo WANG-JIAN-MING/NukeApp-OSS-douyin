@@ -6,9 +6,10 @@ on:
   pull_request:
     branches: [dev, master]
 
+# A push is never cancelled by the next one, so every commit that reaches dev gets its build and its Telegram post.
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
@@ -47,9 +48,10 @@ jobs:
         run: node --test .github/scripts/intake.test.cjs
 
   build:
-    name: Verify (Debug)
+    name: Verify (Release)
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    if: ${{ !startsWith(github.event.head_commit.message, '[skip ci]') }}
     steps:
       - uses: actions/checkout@v4
 
@@ -81,18 +83,54 @@ jobs:
             ~/.cargo/git
           key: deps-${{ hashFiles('apps/module/src/main/cpp/dependencies.lock.json', 'apps/*/src/main/rust/Cargo.lock', 'apps/patcher/lspatch.lock.json') }}
 
-      - name: Verify
-        run: ./gradlew verify --max-workers=1 --console=plain
+      # Only a push has the release key. A pull request builds an unsigned Release, which is all a fork can get. The key
+      # goes into the ignored local.properties on the runner, where the build already reads it, and is never printed.
+      - name: Restore the release key
+        if: ${{ github.event_name == 'push' }}
+        env:
+          KEYSTORE_BASE64: ${{ secrets.SIGN_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.SIGN_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.SIGN_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.SIGN_KEY_PASSWORD }}
+        run: |
+          for name in KEYSTORE_BASE64 KEYSTORE_PASSWORD KEY_ALIAS KEY_PASSWORD; do
+            if [ -z "${!name}" ]; then
+              echo "::error::The secret SIGN_${name} is not set, so a push cannot produce a signed Release."
+              exit 1
+            fi
+          done
+          keystore="$RUNNER_TEMP/release.jks"
+          printf '%s' "$KEYSTORE_BASE64" | base64 -d > "$keystore"
+          {
+            echo "signing.storeFile=$keystore"
+            echo "signing.storePassword=$KEYSTORE_PASSWORD"
+            echo "signing.keyAlias=$KEY_ALIAS"
+            echo "signing.keyPassword=$KEY_PASSWORD"
+          } >> local.properties
 
-      - name: Upload Debug APKs
+      - name: Verify
+        run: ./gradlew verifyRelease --max-workers=1 --console=plain
+
+      - name: Show APK checksums
+        if: success()
+        run: |
+          {
+            echo "### Release APKs"
+            echo "| APK | SHA-256 |"
+            echo "| :-- | :-- |"
+            for apk in apps/module/build/outputs/apk/release/*.apk apps/patcher/build/outputs/apk/release/*.apk; do
+              echo "| $(basename "$apk") | $(sha256sum "$apk" | cut -d' ' -f1) |"
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload Release APKs
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: debug-apks
+          name: release-apks
           path: |
-            apps/module/build/outputs/apk/debug/*.apk
-            apps/patcher/build/outputs/apk/debug/*.apk
-            fixtures/host/build/outputs/apk/debug/*.apk
+            apps/module/build/outputs/apk/release/*.apk
+            apps/patcher/build/outputs/apk/release/*.apk
           if-no-files-found: error
 
       - name: Upload reports
@@ -104,3 +142,59 @@ jobs:
             **/build/reports/**
             **/build/test-results/**
           if-no-files-found: ignore
+
+  # Posts the signed Release APKs of a commit that reached dev or master to the CI channel. Needs TELEGRAM_BOT_TOKEN and
+  # TELEGRAM_CHAT_ID. The APKs are far below the 50 MB the cloud Bot API accepts, so no local Bot API server is needed.
+  telegram:
+    name: Post to Telegram
+    runs-on: ubuntu-latest
+    needs: build
+    if: ${{ github.event_name == 'push' }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: release-apks
+          path: apks
+
+      - name: Send
+        env:
+          BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+          COMMIT_AUTHOR: ${{ github.event.head_commit.author.name }}
+          COMMIT_URL: ${{ github.event.head_commit.url }}
+        run: |
+          if [ -z "$BOT_TOKEN" ] || [ -z "$CHAT_ID" ]; then
+            echo "::error::TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID is not set."
+            exit 1
+          fi
+          python3 - <<'PY'
+          import json, os, subprocess, glob, sys
+
+          # MarkdownV2 only needs ` and \ escaped inside code, and ) and \ inside a link target.
+          def code(text): return text.replace("\\", "\\\\").replace("`", "\\`")
+          def link(text): return text.replace("\\", "\\\\").replace(")", "\\)")
+
+          message = os.environ["COMMIT_MESSAGE"].strip()
+          author = os.environ["COMMIT_AUTHOR"]
+          url = os.environ["COMMIT_URL"]
+          caption = f"New push to GitHub\\!\n```\n{code(message)}\n```by `{code(author)}`\n[See the commit]({link(url)})"
+          # A caption holds at most 1024 characters; a longer message is cut to the link.
+          if len(caption) > 1024:
+              caption = f"New push to GitHub\\!\nby `{code(author)}`\n[See the commit]({link(url)})"
+
+          files = sorted(glob.glob("apks/**/*.apk", recursive=True))
+          if not files:
+              sys.exit("no APK to send")
+          media = [{"type": "document", "media": f"attach://file{i}"} for i in range(len(files))]
+          media[-1].update({"caption": caption, "parse_mode": "MarkdownV2"})
+          command = ["curl", "--fail-with-body", "--silent", "--show-error",
+                     f"https://api.telegram.org/bot{os.environ['BOT_TOKEN']}/sendMediaGroup",
+                     "-F", f"chat_id={os.environ['CHAT_ID']}", "-F", f"media={json.dumps(media)}"]
+          for i, path in enumerate(files):
+              command += ["-F", f"file{i}=@{path}"]
+          result = subprocess.run(command, capture_output=True, text=True)
+          # The token is in the URL, so never print the command.
+          print(result.stdout[:500], result.stderr[:500])
+          sys.exit(result.returncode)
+          PY

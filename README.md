@@ -184,7 +184,7 @@ Zygisk 的 native 引导细节（JNI 契约、固定依赖、库怎么随 zip �
 git config core.hooksPath .githooks
 ```
 
-GitHub Actions（`.github/workflows/ci.yml`）对推送和 PR 里的提交做同样的检查；向 `dev`、`master` 推送或提 PR 时还会跑 `./gradlew verify`（只跑 Debug）并上传 Debug APK。
+GitHub Actions（`.github/workflows/ci.yml`）对推送和 PR 里的提交做同样的检查；向 `dev`、`master` 推送或提 PR 时还会跑 `./gradlew verifyRelease`（Debug 加 R8 Release）并上传 Release APK。推送时用仓库 secrets `SIGN_KEYSTORE_BASE64`、`SIGN_KEYSTORE_PASSWORD`、`SIGN_KEY_ALIAS`、`SIGN_KEY_PASSWORD` 里的密钥签名，缺任何一项都会失败；PR 拿不到密钥，产物是未签名的 Release。推送成功后，还会用 `TELEGRAM_BOT_TOKEN` 和 `TELEGRAM_CHAT_ID` 把已签名的模块和 NukePatcher APK 连同提交信息发到 Telegram 频道。
 
 ### 代码布局
 
