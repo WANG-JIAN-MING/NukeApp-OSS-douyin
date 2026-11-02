@@ -176,13 +176,24 @@ jobs:
           def code(text): return text.replace("\\", "\\\\").replace("`", "\\`")
           def link(text): return text.replace("\\", "\\\\").replace(")", "\\)")
 
-          message = os.environ["COMMIT_MESSAGE"].strip()
+          # Attribution trailers say nothing about the change and would only use up the caption.
+          lines = [line for line in os.environ["COMMIT_MESSAGE"].strip().splitlines() if not line.lower().startswith("co-authored-by:")]
+          message = "\n".join(lines).strip()
           author = os.environ["COMMIT_AUTHOR"]
           url = os.environ["COMMIT_URL"]
-          caption = f"New push to GitHub\\!\n```\n{code(message)}\n```by `{code(author)}`\n[See the commit]({link(url)})"
-          # A caption holds at most 1024 characters; a longer message is cut to the link.
+
+          def build(text):
+              return f"New push to GitHub\\!\n```\n{code(text)}\n```by `{code(author)}`\n[See the commit]({link(url)})"
+
+          # A caption holds at most 1024 characters. A longer message is cut at the end, so the title always stays.
+          caption = build(message)
           if len(caption) > 1024:
-              caption = f"New push to GitHub\\!\nby `{code(author)}`\n[See the commit]({link(url)})"
+              low, high = 0, len(message)
+              while low < high:
+                  middle = (low + high + 1) // 2
+                  if len(build(message[:middle].rstrip() + "...")) <= 1024: low = middle
+                  else: high = middle - 1
+              caption = build(message[:low].rstrip() + "...")
 
           files = sorted(glob.glob("apks/**/*.apk", recursive=True))
           if not files:
