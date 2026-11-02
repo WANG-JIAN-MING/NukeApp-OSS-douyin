@@ -73,6 +73,7 @@ def main():
         try:
             items = list(range_messages(args.revision_range))
         except subprocess.CalledProcessError:
+            print(f"commit-msg: cannot list the commits in {args.revision_range!r}", file=sys.stderr)
             return 2
     else:
         items = [("message", Path(args.message_file).read_text(encoding="utf-8", errors="replace"))]

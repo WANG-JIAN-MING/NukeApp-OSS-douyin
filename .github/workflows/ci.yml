@@ -32,7 +32,8 @@ jobs:
         run: |
           if [ "$EVENT" = pull_request ]; then
             range="$BASE_SHA..$HEAD_SHA"
-          elif [ "$BEFORE_SHA" = 0000000000000000000000000000000000000000 ]; then
+          elif [ "$BEFORE_SHA" = 0000000000000000000000000000000000000000 ] || ! git cat-file -e "$BEFORE_SHA^{commit}" 2>/dev/null; then
+            # A new branch, or a force push that dropped the old tip from the history: only the new head is known.
             range="$PUSH_SHA~1..$PUSH_SHA"
           else
             range="$BEFORE_SHA..$PUSH_SHA"
