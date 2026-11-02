@@ -39,7 +39,8 @@ internal data class CleanOptions(
 internal class CleanPlan(val fade: List<Any>, val gone: List<Any>)
 
 // The rules, in order: the first one that claims a View decides it. Views no rule claims are hidden only
-// if they are a layout or seek bar of one of the known container classes.
+// if they are a layout or seek bar of one of the known container classes. Nothing that is, holds or sits inside the
+// comment panel is hidden: the rules match generic layout classes by name, and the panel is built from the same ones.
 internal fun planCleanScreen(root: CleanNode, options: CleanOptions): CleanPlan {
     val fade = ArrayList<CleanNode>()
     val gone = ArrayList<CleanNode>()
@@ -50,7 +51,23 @@ internal fun planCleanScreen(root: CleanNode, options: CleanOptions): CleanPlan 
         }
     }
     for (view in containers) if (view.simpleName in CONTAINER_NAMES) fade += view
-    return CleanPlan(fade.map { it.handle }, gone.map { it.handle })
+    val comments = commentViews(root)
+    return CleanPlan(fade.filter { it !in comments }.map { it.handle }, gone.filter { it !in comments }.map { it.handle })
+}
+
+private const val COMMENT_PACKAGE = "com.ss.android.ugc.aweme.comment."
+
+// Every View of a comment class, with everything below it and every ancestor above it.
+private fun commentViews(root: CleanNode): Set<CleanNode> {
+    val found = HashSet<CleanNode>()
+    for (view in root.descendants()) {
+        if (!view.className.startsWith(COMMENT_PACKAGE)) continue
+        found += view
+        found += view.descendants()
+        var ancestor = view.parent
+        while (ancestor != null) { found += ancestor; ancestor = ancestor.parent }
+    }
+    return found
 }
 
 private fun claimed(view: CleanNode, options: CleanOptions, fade: MutableList<CleanNode>, gone: MutableList<CleanNode>): Boolean {

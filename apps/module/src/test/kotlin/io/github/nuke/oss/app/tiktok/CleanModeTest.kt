@@ -28,6 +28,17 @@ class CleanModeTest : HookHarness() {
         assertTrue(plan.gone.isEmpty())
     }
 
+    @Test fun `the comment panel and what holds it are never hidden`() {
+        val panel = node("CommentNestedLayout", Kind.FRAME, className = "com.ss.android.ugc.aweme.comment.widget.CommentNestedLayout")
+        val inside = node("MeasureOnceFrameLayout", Kind.FRAME)
+        panel.add(inside)
+        val holder = node("MeasureOnceRelativeLayout", Kind.RELATIVE, children = arrayOf(panel))
+        val sibling = node("FeedRightScaleView", Kind.LINEAR)
+        val plan = planCleanScreen(root(holder, sibling), defaults)
+        assertEquals(listOf(sibling.handle), plan.fade)
+        assertTrue(plan.gone.isEmpty())
+    }
+
     @Test fun `tabs and the sound disc are only hidden`() {
         val tabs = node("MainBottomTabContainer", Kind.LINEAR)
         val disc = node("MusicCoverContainerLayout", Kind.FRAME)
