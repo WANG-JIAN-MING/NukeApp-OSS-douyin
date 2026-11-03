@@ -1,8 +1,8 @@
 use nuke_protocol_core::riskctl::{
-    self, adbd, bootloader, build, check_loaded, crc32c, debugger, descriptors, emulator, encode,
-    frida, injection, kernel_exposure, maps_memory, maps_tools, mounts, network,
-    parse_exec_segments, readable, root, scan, selinux, selinux_policy, signature_path, tripwire,
-    Check, Class, ImageResult, Level, Report, CATALOGUE,
+    self, adbd, auxv_sane, bootloader, build, check_loaded, crc32c, debugger, descriptors,
+    emulator, encode, frida, injection, kernel_exposure, maps_memory, maps_tools, mounts, network,
+    parse_exec_segments, readable, root, runtime_maps_sane, scan, selinux, selinux_policy,
+    signature_path, tripwire, Check, Class, ImageResult, Level, Probes, Report, CATALOGUE,
 };
 
 fn strings(items: &[&str]) -> Vec<String> {
@@ -76,7 +76,7 @@ fn weak_flags_and_kernel_tamper_join_a_hard_flag_and_the_rest_stay_out() {
 fn a_report_collects_the_flags_of_its_checks_and_trips_on_them() {
     let rooted = Report::new(vec![
         root(&["/system/bin/su"]),
-        bootloader(Some("unlocked"), None, None),
+        bootloader(Some("unlocked"), None, None, None),
         adbd(Some("running")),
     ]);
     assert_eq!(rooted.tripwire, 0);
@@ -209,29 +209,61 @@ fn su_is_reported_and_not_held_against_the_device() {
 #[test]
 fn the_boot_state_tells_locked_from_unlocked() {
     assert_eq!(
-        bootloader(Some("locked"), Some("1"), Some("green")).level,
+        bootloader(Some("locked"), Some("1"), Some("green"), None).level,
         Level::Ok
     );
-    assert_eq!(bootloader(Some("unlocked"), None, None).level, Level::Info);
     assert_eq!(
-        bootloader(Some("unlocked"), None, None).flags,
-        riskctl::BOOT_UNLOCKED
-    );
-    assert_eq!(bootloader(None, Some("0"), None).level, Level::Info);
-    assert_eq!(bootloader(None, None, Some("ORANGE")).level, Level::Info);
-    assert_eq!(
-        bootloader(Some("locked"), Some("1"), Some("yellow")).level,
+        bootloader(Some("unlocked"), None, None, None).level,
         Level::Info
     );
     assert_eq!(
-        bootloader(Some("locked"), Some("1"), Some("red")).level,
-        Level::Warn
+        bootloader(Some("unlocked"), None, None, None).flags,
+        riskctl::BOOT_UNLOCKED
     );
-    assert_eq!(bootloader(None, None, None).level, Level::Unknown);
+    assert_eq!(bootloader(None, Some("0"), None, None).level, Level::Info);
     assert_eq!(
-        bootloader(Some("unlocked"), Some("0"), Some("red")).level,
+        bootloader(None, None, Some("ORANGE"), None).level,
+        Level::Info
+    );
+    assert_eq!(
+        bootloader(Some("locked"), Some("1"), Some("yellow"), None).level,
+        Level::Info
+    );
+    assert_eq!(
+        bootloader(Some("locked"), Some("1"), Some("red"), None).level,
         Level::Warn
     );
+    assert_eq!(bootloader(None, None, None, None).level, Level::Unknown);
+    assert_eq!(
+        bootloader(Some("unlocked"), Some("0"), Some("red"), None).level,
+        Level::Warn
+    );
+}
+
+#[test]
+fn a_verity_that_does_not_enforce_is_a_warning_that_alone_does_not_trip() {
+    let disabled = bootloader(Some("locked"), Some("1"), Some("green"), Some("disabled"));
+    assert_eq!(disabled.level, Level::Warn);
+    assert_eq!(disabled.flags, riskctl::KERNEL_TAMPER);
+    assert_eq!(disabled.detail, "dm-verity is not enforcing");
+    assert_eq!(Report::new(vec![disabled]).tripwire, 0);
+    assert_eq!(
+        bootloader(None, None, None, Some("EIO")).flags,
+        riskctl::KERNEL_TAMPER
+    );
+    assert_eq!(
+        bootloader(None, None, None, Some("enforcing")).level,
+        Level::Ok
+    );
+    assert_eq!(bootloader(None, None, None, Some("enforcing")).flags, 0);
+}
+
+#[test]
+fn an_unlocked_boot_with_verity_off_keeps_both_findings() {
+    let both = bootloader(Some("unlocked"), None, None, Some("disabled"));
+    assert_eq!(both.level, Level::Warn);
+    assert_eq!(both.flags, riskctl::BOOT_UNLOCKED | riskctl::KERNEL_TAMPER);
+    assert!(both.detail.contains("unlocked") && both.detail.contains("dm-verity"));
 }
 
 #[test]
@@ -274,21 +306,114 @@ fn the_build_properties_tell_a_release_from_a_debuggable_build() {
 
 #[test]
 fn an_emulator_or_a_native_bridge_is_reported() {
-    assert_eq!(emulator(Some("1"), None, None).level, Level::Info);
-    assert_eq!(emulator(None, Some("ranchu"), None).level, Level::Info);
-    assert_eq!(emulator(None, Some("goldfish"), None).level, Level::Info);
-    let bridge = emulator(Some("0"), Some("qcom"), Some("libhoudini.so"));
+    let none = Probes::default();
+    assert_eq!(emulator(Some("1"), None, None, none).level, Level::Info);
+    assert_eq!(
+        emulator(None, Some("ranchu"), None, none).level,
+        Level::Info
+    );
+    assert_eq!(
+        emulator(None, Some("goldfish"), None, none).level,
+        Level::Info
+    );
+    let bridge = emulator(Some("0"), Some("qcom"), Some("libhoudini.so"), none);
     assert_eq!(bridge.detail, "a native bridge translates code");
     assert_eq!(bridge.flags, riskctl::NATIVE_BRIDGE);
     assert_eq!(
-        emulator(Some("0"), Some("qcom"), Some("0")).level,
+        emulator(Some("0"), Some("qcom"), Some("0"), none).level,
         Level::Ok
     );
     assert_eq!(
-        emulator(Some("0"), Some("qcom"), Some("false")).level,
+        emulator(Some("0"), Some("qcom"), Some("false"), none).level,
         Level::Ok
     );
-    assert_eq!(emulator(None, None, None).level, Level::Unknown);
+    assert_eq!(emulator(None, None, None, none).level, Level::Unknown);
+}
+
+#[test]
+fn a_runtime_that_fails_all_four_probes_reads_as_an_emulated_one() {
+    let failed = Probes {
+        loader: Some(false),
+        auxv: Some(false),
+        properties: Some(false),
+        maps: Some(false),
+    };
+    let found = emulator(Some("0"), Some("qcom"), Some("0"), failed);
+    assert_eq!(found.level, Level::Info);
+    assert_eq!(found.flags, 0);
+    let bridged = emulator(Some("0"), Some("qcom"), Some("libhoudini.so"), failed);
+    assert_eq!(bridged.flags, riskctl::NATIVE_BRIDGE);
+    // A probe that could not be read, or one that passed, is no conclusion.
+    let unread = Probes {
+        auxv: None,
+        ..failed
+    };
+    assert_eq!(
+        emulator(Some("0"), Some("qcom"), Some("0"), unread).level,
+        Level::Ok
+    );
+    let one_passed = Probes {
+        maps: Some(true),
+        ..failed
+    };
+    assert_eq!(
+        emulator(Some("0"), Some("qcom"), Some("0"), one_passed).level,
+        Level::Ok
+    );
+}
+
+fn auxv_bytes(entries: &[(u64, u64)]) -> Vec<u8> {
+    let mut bytes = Vec::new();
+    for (kind, value) in entries {
+        bytes.extend_from_slice(&kind.to_le_bytes());
+        bytes.extend_from_slice(&value.to_le_bytes());
+    }
+    bytes
+}
+
+#[test]
+fn the_auxiliary_vector_must_be_the_kernels() {
+    let kernel = auxv_bytes(&[(6, 4096), (15, 0x7000), (25, 0x7fff_0000), (0, 0)]);
+    assert!(auxv_sane(&kernel));
+    assert!(!auxv_sane(&auxv_bytes(&[(6, 4096), (15, 0x7000), (25, 1)])));
+    assert!(!auxv_sane(&auxv_bytes(&[
+        (6, 3000),
+        (15, 0x7000),
+        (25, 1),
+        (0, 0)
+    ])));
+    assert!(!auxv_sane(&auxv_bytes(&[
+        (6, 4096),
+        (15, 0),
+        (25, 1),
+        (0, 0)
+    ])));
+    assert!(!auxv_sane(&auxv_bytes(&[
+        (6, 4096),
+        (15, 1),
+        (25, 0),
+        (0, 0)
+    ])));
+    assert!(!auxv_sane(&[]));
+}
+
+#[test]
+fn the_maps_hold_the_android_runtime_as_a_device_does() {
+    let apex = "7c00-7d00 r-xp 0 fe:4f 1 /apex/com.android.runtime/lib64/bionic/libc.so\n\
+                7e00-7f00 r-xp 0 fe:4f 2 /apex/com.android.runtime/bin/linker64\n";
+    assert!(runtime_maps_sane(apex));
+    let system = "7c00-7d00 r-xp 0 fe:4f 1 /system/lib64/libc.so\n\
+                  7e00-7f00 r-xp 0 fe:4f 2 /system/lib64/libart.so\n";
+    assert!(runtime_maps_sane(system));
+    assert!(!runtime_maps_sane(
+        "7c00-7d00 r-xp 0 fe:4f 1 /system/lib64/libc.so\n"
+    ));
+    assert!(!runtime_maps_sane(
+        "7e00-7f00 r-xp 0 fe:4f 2 /system/lib64/libart.so\n"
+    ));
+    assert!(!runtime_maps_sane(
+        "7c00-7d00 r-xp 0 fe:4f 1 /data/local/tmp/libc.so\n7e00-7f00 r-xp 0 fe:4f 2 /data/libart.so\n"
+    ));
 }
 
 #[test]
