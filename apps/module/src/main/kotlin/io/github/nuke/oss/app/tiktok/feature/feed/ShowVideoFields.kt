@@ -79,7 +79,7 @@ internal class ShowVideoFields(
 // The sheet of one post, with every label resolved from the module strings and times in the phone's time zone.
 internal fun sheetOf(metadata: VideoFieldsMetadata, string: (Int, Array<out Any>) -> String): InfoSheet {
     fun text(id: Int) = string(id, emptyArray())
-    val sections = metadata.displaySections(::text, Locale.getDefault(), TimeZone.getDefault())
+    val sections = metadata.displaySections(string, Locale.getDefault(), TimeZone.getDefault())
     fun shared(list: List<VideoInfoDisplaySection>) = list.map { section -> InfoSection(section.title, section.fields.map { InfoField(it.label, it.value) }) }
     return InfoSheet(
         title = text(R.string.host_video_fields_title),

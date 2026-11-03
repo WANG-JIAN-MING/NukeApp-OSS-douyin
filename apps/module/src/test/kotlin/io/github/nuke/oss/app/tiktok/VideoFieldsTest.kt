@@ -2,6 +2,7 @@ package io.github.nuke.oss.app.tiktok
 
 import io.github.nuke.oss.R
 import io.github.nuke.oss.app.tiktok.feature.feed.ShowVideoFields
+import io.github.nuke.oss.app.tiktok.feature.feed.sheetOf
 import io.github.nuke.oss.app.tiktok.sdk.feed.VideoFieldsReader
 import io.github.nuke.oss.app.tiktok.sdk.feed.displaySections
 import io.github.nuke.oss.app.tiktok.sdk.feed.filterVideoInfo
@@ -63,6 +64,14 @@ class VideoFieldsTest : HookHarness() {
         assertEquals(1, metadata.sections.first { it.title == R.string.host_video_info_image }.imageIndex)
     }
 
+    @Test fun `an image post's details sheet fills in each image title with its own index`() {
+        // Like Context.getString(id, args), every lookup is run through String.format, so a placeholder title looked up without its index throws.
+        val templates = mapOf(R.string.host_video_info_image to "Image %1\$d")
+        val formatted: (Int, Array<out Any>) -> String = { id, args -> String.format(templates[id] ?: "t$id", *args) }
+        val sheet = sheetOf(VideoFieldsReader.read(Aweme(video = null, images = listOf(Image(), Image()))), formatted)
+        assertEquals(listOf("Image 1", "Image 2"), sheet.sections.map { it.title }.filter { it.startsWith("Image ") })
+    }
+
     @Test fun `unusable values are left out, not shown as zero`() {
         val metadata = VideoFieldsReader.read(Aweme(aweme_id = "0", create_time = -1, ip_attribution = " ", author = null, statistics = null, video = null, share_url = "javascript:x"))
         assertTrue(metadata.sections.none { it.title == R.string.host_video_info_author || it.title == R.string.host_video_info_links })
@@ -72,7 +81,7 @@ class VideoFieldsTest : HookHarness() {
 
     @Test fun `values are formatted in the given locale and time zone and the filter only narrows what is shown`() {
         val metadata = VideoFieldsReader.read(Aweme())
-        val sections = metadata.displaySections({ "t$it" }, Locale.ENGLISH, TimeZone.getTimeZone("UTC"))
+        val sections = metadata.displaySections({ id, _ -> "t$id" }, Locale.ENGLISH, TimeZone.getTimeZone("UTC"))
         val all = sections.flatMap { it.fields }.associate { it.label to it.value }
         assertEquals("2023-11-14 22:13:20", all["t${R.string.host_video_info_created}"])
         assertEquals("5 t${R.string.host_video_info_seconds}", all["t${R.string.host_video_info_duration}"])

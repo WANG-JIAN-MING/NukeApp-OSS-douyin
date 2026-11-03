@@ -191,38 +191,42 @@ internal object VideoFieldsReader {
 }
 
 internal fun VideoFieldsMetadata.displaySections(
-    text: (Int) -> String,
+    string: (Int, Array<out Any>) -> String,
     locale: Locale,
     timeZone: TimeZone,
-): List<VideoInfoDisplaySection> = sections.map { section ->
-    val title = if (section.imageIndex == null) text(section.title)
-        else String.format(locale, text(section.title), section.imageIndex)
-    VideoInfoDisplaySection(title, section.fields.map { field ->
-        val value = when (field.format) {
-            VideoInfoFormat.TEXT -> field.value
-            VideoInfoFormat.TIME -> SimpleDateFormat("yyyy-MM-dd HH:mm:ss", locale).apply { this.timeZone = timeZone }
-                .format(Date(field.value.toLong() * 1000))
-            VideoInfoFormat.MILLISECONDS -> BigDecimal.valueOf(field.value.toLong(), 3).stripTrailingZeros().toPlainString() +
-                " " + text(R.string.host_video_info_seconds)
-            VideoInfoFormat.SECONDS -> field.value + " " + text(R.string.host_video_info_seconds)
-            VideoInfoFormat.BYTES -> {
-                val size = field.value.toLong()
-                when {
-                    size >= 1024L * 1024 * 1024 -> String.format(locale, "%.2f GiB", size / (1024.0 * 1024 * 1024))
-                    size >= 1024L * 1024 -> String.format(locale, "%.2f MiB", size / (1024.0 * 1024))
-                    size >= 1024L -> String.format(locale, "%.2f KiB", size / 1024.0)
-                    else -> "$size B"
+): List<VideoInfoDisplaySection> {
+    fun text(id: Int) = string(id, emptyArray())
+    return sections.map { section ->
+        // An image title is a template: its index goes into the same lookup, since the string lookup always formats and
+        // a bare lookup would throw on the unfilled placeholder.
+        val title = section.imageIndex?.let { string(section.title, arrayOf(it)) } ?: text(section.title)
+        VideoInfoDisplaySection(title, section.fields.map { field ->
+            val value = when (field.format) {
+                VideoInfoFormat.TEXT -> field.value
+                VideoInfoFormat.TIME -> SimpleDateFormat("yyyy-MM-dd HH:mm:ss", locale).apply { this.timeZone = timeZone }
+                    .format(Date(field.value.toLong() * 1000))
+                VideoInfoFormat.MILLISECONDS -> BigDecimal.valueOf(field.value.toLong(), 3).stripTrailingZeros().toPlainString() +
+                    " " + text(R.string.host_video_info_seconds)
+                VideoInfoFormat.SECONDS -> field.value + " " + text(R.string.host_video_info_seconds)
+                VideoInfoFormat.BYTES -> {
+                    val size = field.value.toLong()
+                    when {
+                        size >= 1024L * 1024 * 1024 -> String.format(locale, "%.2f GiB", size / (1024.0 * 1024 * 1024))
+                        size >= 1024L * 1024 -> String.format(locale, "%.2f MiB", size / (1024.0 * 1024))
+                        size >= 1024L -> String.format(locale, "%.2f KiB", size / 1024.0)
+                        else -> "$size B"
+                    }
                 }
+                VideoInfoFormat.FLAG -> text(if (field.value == "true") R.string.host_video_info_yes else R.string.host_video_info_no)
+                VideoInfoFormat.KIND -> text(when (field.value) {
+                    "images" -> R.string.host_video_info_kind_images
+                    "video" -> R.string.host_video_info_kind_video
+                    else -> R.string.host_video_info_kind_other
+                })
             }
-            VideoInfoFormat.FLAG -> text(if (field.value == "true") R.string.host_video_info_yes else R.string.host_video_info_no)
-            VideoInfoFormat.KIND -> text(when (field.value) {
-                "images" -> R.string.host_video_info_kind_images
-                "video" -> R.string.host_video_info_kind_video
-                else -> R.string.host_video_info_kind_other
-            })
-        }
-        VideoInfoDisplayField(text(field.label), value)
-    })
+            VideoInfoDisplayField(text(field.label), value)
+        })
+    }
 }
 
 internal fun List<VideoInfoDisplaySection>.filterVideoInfo(query: String): List<VideoInfoDisplaySection> {
