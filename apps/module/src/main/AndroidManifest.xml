@@ -9,7 +9,7 @@
         android:theme="@android:style/Theme.Material.Light.NoActionBar">
         <meta-data android:name="xposedmodule" android:value="true" />
         <meta-data android:name="xposedminversion" android:value="82" />
-        <meta-data android:name="xposeddescription" android:value="NukeApp-OSS XP82, API 102 and Zygisk Hook fixture" />
+        <meta-data android:name="xposeddescription" android:value="习惯了你的存在，你走后我该怎么办。@MikoCIBuilds 所属" />
         <meta-data android:name="xposedscope" android:resource="@array/xposed_scope" />
         <!-- Xposed managers open the module through MODULE_SETTINGS, so it stays reachable with the launcher icon hidden. -->
         <activity android:name=".MainActivity" android:exported="true">
