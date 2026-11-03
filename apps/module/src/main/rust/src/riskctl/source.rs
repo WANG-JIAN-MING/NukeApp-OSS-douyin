@@ -1,4 +1,4 @@
-use super::{check_loaded, classify, Report};
+use super::{check_loaded, classify, ImageResult, Report};
 use std::fs::{self, File};
 use std::io::Read;
 use std::path::Path;
@@ -123,6 +123,7 @@ pub fn scan() -> Report {
         .collect();
     let enforce = read_text("/sys/fs/selinux/enforce");
     let policy = read_bytes("/sys/fs/selinux/status", 20);
+    let auxv = read_bytes("/proc/self/auxv", 4096);
     let kallsyms = read_text_limited("/proc/kallsyms", 8192);
     let mountinfo = read_text("/proc/self/mountinfo");
     let tcp = match (read_text("/proc/net/tcp"), read_text("/proc/net/tcp6")) {
@@ -135,15 +136,25 @@ pub fn scan() -> Report {
     };
     let unix = read_text("/proc/net/unix");
     let environ = read_text("/proc/self/environ");
+    let libc = check_loaded(LIBC, maps.as_deref());
+    let probes = classify::Probes {
+        loader: match libc {
+            ImageResult::Match => Some(true),
+            ImageResult::Mismatch | ImageResult::NotLoaded => Some(false),
+            ImageResult::Unavailable => None,
+        },
+        auxv: auxv.as_deref().map(classify::auxv_sane),
+        // Only Android has these properties; elsewhere the probe is not known rather than failed.
+        properties: cfg!(target_os = "android")
+            .then(|| property("ro.debuggable").is_some() || property("ro.secure").is_some()),
+        maps: maps.as_deref().map(classify::runtime_maps_sane),
+    };
     Report::new(vec![
         classify::debugger(status.as_deref()),
         classify::injection(preload.as_deref(), audit.as_deref()),
         classify::frida(maps.as_deref(), &threads, &descriptors),
         classify::descriptors(&descriptors),
-        classify::signature_path(
-            check_loaded(MODULE_LIBRARY, maps.as_deref()),
-            check_loaded(LIBC, maps.as_deref()),
-        ),
+        classify::signature_path(check_loaded(MODULE_LIBRARY, maps.as_deref()), libc),
         classify::maps_tools(maps.as_deref()),
         classify::maps_memory(maps.as_deref()),
         classify::network(tcp.as_deref(), unix.as_deref(), environ.as_deref()),
@@ -152,6 +163,7 @@ pub fn scan() -> Report {
             property("ro.boot.vbmeta.device_state").as_deref(),
             property("ro.boot.flash.locked").as_deref(),
             property("ro.boot.verifiedbootstate").as_deref(),
+            property("ro.boot.veritymode").as_deref(),
         ),
         classify::selinux(enforce.as_deref()),
         classify::selinux_policy(policy.as_deref()),
@@ -166,6 +178,7 @@ pub fn scan() -> Report {
             property("ro.kernel.qemu").as_deref(),
             property("ro.hardware").as_deref(),
             property("ro.dalvik.vm.native.bridge").as_deref(),
+            probes,
         ),
         classify::adbd(property("init.svc.adbd").as_deref()),
     ])

@@ -395,48 +395,66 @@ pub fn root(found: &[&str]) -> Check {
     }
 }
 
-/// Verified boot as the bootloader reported it in system properties.
+/// Verified boot as the bootloader reported it in system properties, and whether dm-verity still checks the system
+/// partitions. A failed verified boot and a verity that does not enforce both mean the platform's protection is gone;
+/// an unlocked bootloader is only a state, so it never raises the level above `Info`.
 pub fn bootloader(
     device_state: Option<&str>,
     flash_locked: Option<&str>,
     verified_state: Option<&str>,
+    verity_mode: Option<&str>,
 ) -> Check {
     let state = |value: Option<&str>| value.map(|text| text.trim().to_ascii_lowercase());
-    let (device, flash, verified) = (
+    let (device, flash, verified, verity) = (
         state(device_state),
         state(flash_locked),
         state(verified_state),
+        state(verity_mode),
     );
-    if device.is_none() && flash.is_none() && verified.is_none() {
+    if device.is_none() && flash.is_none() && verified.is_none() && verity.is_none() {
         return Check::new(
             "bootloader",
             Level::Unknown,
             "boot state properties not readable",
         );
     }
+    let mut found = Vec::new();
+    let mut flags = 0;
+    let mut level = Level::Ok;
     if verified.as_deref() == Some("red") {
-        return Check::new("bootloader", Level::Warn, "verified boot failed (red)")
-            .flagged(BOOT_UNLOCKED);
+        found.push("verified boot failed (red)");
+        flags |= BOOT_UNLOCKED;
+        level = Level::Warn;
+    }
+    if matches!(verity.as_deref(), Some("disabled" | "eio")) {
+        found.push("dm-verity is not enforcing");
+        flags |= KERNEL_TAMPER;
+        level = Level::Warn;
     }
     let unlocked = device.as_deref() == Some("unlocked")
         || flash.as_deref() == Some("0")
         || verified.as_deref() == Some("orange");
     if unlocked {
-        return Check::new("bootloader", Level::Info, "bootloader is unlocked")
-            .flagged(BOOT_UNLOCKED);
+        found.push("bootloader is unlocked");
+        flags |= BOOT_UNLOCKED;
+        if level == Level::Ok {
+            level = Level::Info;
+        }
     }
     if verified.as_deref() == Some("yellow") {
+        found.push("verified boot with a custom key (yellow)");
+        if level == Level::Ok {
+            level = Level::Info;
+        }
+    }
+    if found.is_empty() {
         return Check::new(
             "bootloader",
-            Level::Info,
-            "verified boot with a custom key (yellow)",
+            Level::Ok,
+            "bootloader locked, verified boot intact",
         );
     }
-    Check::new(
-        "bootloader",
-        Level::Ok,
-        "bootloader locked, verified boot intact",
-    )
+    Check::new("bootloader", level, joined(&found)).flagged(flags)
 }
 
 /// SELinux mode from `/sys/fs/selinux/enforce`.
@@ -612,8 +630,37 @@ pub fn build(tags: Option<&str>, debuggable: Option<&str>, secure: Option<&str>)
     Check::new("build", Level::Ok, "release keys, not a debuggable build")
 }
 
-/// An emulator, or an ARM translation layer that makes an x86 machine run this code.
-pub fn emulator(qemu: Option<&str>, hardware: Option<&str>, native_bridge: Option<&str>) -> Check {
+/// Four structural probes of this process, the ones an emulated Android runtime (unidbg) fails. `Some(true)` passed,
+/// `Some(false)` failed, `None` could not be read. Only all four failing is a conclusion; a partial failure, or a probe
+/// that could not be read, says nothing.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct Probes {
+    /// The libc this process has loaded is the code of its file.
+    pub loader: Option<bool>,
+    /// The auxiliary vector is the kernel's (see `auxv_sane`).
+    pub auxv: Option<bool>,
+    /// The Android platform properties exist. Only readable on Android.
+    pub properties: Option<bool>,
+    /// The memory map holds the Android runtime (see `runtime_maps_sane`).
+    pub maps: Option<bool>,
+}
+
+impl Probes {
+    fn all_failed(self) -> bool {
+        [self.loader, self.auxv, self.properties, self.maps]
+            .iter()
+            .all(|probe| *probe == Some(false))
+    }
+}
+
+/// An emulator, an ARM translation layer that makes an x86 machine run this code, or a runtime whose structure fails
+/// every probe.
+pub fn emulator(
+    qemu: Option<&str>,
+    hardware: Option<&str>,
+    native_bridge: Option<&str>,
+    probes: Probes,
+) -> Check {
     let bridge = native_bridge.map(str::trim).is_some_and(|value| {
         !value.is_empty() && value != "0" && !value.eq_ignore_ascii_case("false")
     });
@@ -624,6 +671,12 @@ pub fn emulator(qemu: Option<&str>, hardware: Option<&str>, native_bridge: Optio
     } else if bridge {
         Check::new("emulator", Level::Info, "a native bridge translates code")
             .flagged(NATIVE_BRIDGE)
+    } else if probes.all_failed() {
+        Check::new(
+            "emulator",
+            Level::Info,
+            "runtime structure fails all four probes, as an emulated one does",
+        )
     } else if qemu.is_none() && hardware.is_none() && native_bridge.is_none() {
         Check::new(
             "emulator",
@@ -633,6 +686,46 @@ pub fn emulator(qemu: Option<&str>, hardware: Option<&str>, native_bridge: Optio
     } else {
         Check::new("emulator", Level::Ok, "real device, no native bridge")
     }
+}
+
+/// Whether `/proc/self/auxv` is the kernel's: 16-byte entries of two 64-bit words, ending with `AT_NULL`, with a page
+/// size the kernel can give, a platform string and random bytes.
+pub fn auxv_sane(bytes: &[u8]) -> bool {
+    const AT_NULL: u64 = 0;
+    const AT_PAGESZ: u64 = 6;
+    const AT_PLATFORM: u64 = 15;
+    const AT_RANDOM: u64 = 25;
+
+    let word = |raw: &[u8]| <[u8; 8]>::try_from(raw).ok().map(u64::from_le_bytes);
+    let mut terminated = false;
+    let mut page_size_ok = false;
+    let mut platform_ok = false;
+    let mut random_ok = false;
+    for entry in bytes.as_chunks::<16>().0.iter().take(256) {
+        let (Some(kind), Some(value)) = (word(&entry[..8]), word(&entry[8..])) else {
+            return false;
+        };
+        match kind {
+            AT_NULL => {
+                terminated = true;
+                break;
+            }
+            AT_PAGESZ => page_size_ok = value.is_power_of_two() && (4096..=65536).contains(&value),
+            AT_PLATFORM => platform_ok = value != 0,
+            AT_RANDOM => random_ok = value != 0,
+            _ => {}
+        }
+    }
+    terminated && page_size_ok && platform_ok && random_ok
+}
+
+/// Whether the memory map holds the Android runtime the way a device does: bionic's libc, from the APEX runtime or the
+/// system partition, with the ART runtime or the linker. Paths are matched as directories (`/system/`), because the
+/// map lists the files; an emulated runtime often maps none of these.
+pub fn runtime_maps_sane(maps: &str) -> bool {
+    maps.contains("libc.so")
+        && (maps.contains("/apex/com.android.runtime/") || maps.contains("/system/"))
+        && (maps.contains("libart.so") || maps.contains("linker64"))
 }
 
 /// Whether the debug bridge daemon is running on the device.
