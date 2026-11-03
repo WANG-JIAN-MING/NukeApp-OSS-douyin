@@ -67,7 +67,9 @@ import kotlinx.coroutines.launch
 // Where the SDK and its README describe writing and packaging scripts.
 internal const val SCRIPT_DOCS_URL = "https://github.com/dartcv/NukeApp-OSS/tree/dev/sdk/script-sdk"
 
-private enum class ScriptsTab(@StringRes val title: Int) {
+private enum class ScriptsTab(
+    @StringRes val title: Int,
+) {
     INSTALLED(R.string.script_tab_installed),
     STORE(R.string.script_tab_store),
 }
@@ -75,7 +77,10 @@ private enum class ScriptsTab(@StringRes val title: Int) {
 // The scripts page, ported from the legacy module's script settings: installed scripts and the store as two tabs under
 // the title bar, which carries the import and documentation buttons.
 @Composable
-internal fun ScriptsDestination(model: ScriptsModel, onBack: (Offset) -> Unit) {
+internal fun ScriptsDestination(
+    model: ScriptsModel,
+    onBack: (Offset) -> Unit,
+) {
     val context = LocalContext.current
     var selected by rememberSaveable { mutableIntStateOf(0) }
     var importRequest by remember { mutableIntStateOf(0) }
@@ -107,13 +112,18 @@ internal fun ScriptsDestination(model: ScriptsModel, onBack: (Offset) -> Unit) {
                     label = "ScriptsTab",
                 ) { current ->
                     when (current) {
-                        ScriptsTab.INSTALLED -> InstalledScripts(model, Modifier.fillMaxSize(), padding)
-                        ScriptsTab.STORE -> ScriptEmptyState(
-                            Glyph.Store,
-                            stringResource(R.string.script_store_empty_title),
-                            stringResource(R.string.script_store_empty_message),
-                            Modifier.fillMaxSize().padding(padding),
-                        )
+                        ScriptsTab.INSTALLED -> {
+                            InstalledScripts(model, Modifier.fillMaxSize(), padding)
+                        }
+
+                        ScriptsTab.STORE -> {
+                            ScriptEmptyState(
+                                Glyph.Store,
+                                stringResource(R.string.script_store_empty_title),
+                                stringResource(R.string.script_store_empty_message),
+                                Modifier.fillMaxSize().padding(padding),
+                            )
+                        }
                     }
                 }
                 NukeSegmentedControl(
@@ -129,7 +139,11 @@ internal fun ScriptsDestination(model: ScriptsModel, onBack: (Offset) -> Unit) {
 }
 
 @Composable
-private fun InstalledScripts(model: ScriptsModel, modifier: Modifier, padding: PaddingValues) {
+private fun InstalledScripts(
+    model: ScriptsModel,
+    modifier: Modifier,
+    padding: PaddingValues,
+) {
     val scope = rememberCoroutineScope()
     val items by remember(model) { model.items() }.collectAsState(initial = null)
     var actionError by remember { mutableStateOf<String?>(null) }
@@ -154,43 +168,54 @@ private fun InstalledScripts(model: ScriptsModel, modifier: Modifier, padding: P
     }
 
     when {
-        !model.available -> ScriptEmptyState(
-            Glyph.Warning,
-            stringResource(R.string.script_unavailable_title),
-            stringResource(R.string.script_unavailable_message),
-            modifier.padding(padding),
-        )
-        items == null -> ScriptLoadingState(
-            stringResource(R.string.script_scanning_title),
-            stringResource(R.string.script_scanning_message),
-            modifier.padding(padding),
-        )
-        scripts.isEmpty() -> ScriptEmptyState(
-            Glyph.Puzzle,
-            stringResource(R.string.script_none_title),
-            stringResource(R.string.script_none_message),
-            modifier.padding(padding),
-        )
-        else -> LazyColumn(
-            modifier = modifier.padding(horizontal = 18.dp),
-            contentPadding = padding,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            items(scripts, key = { it.id }) { script ->
-                InstalledScriptCard(
-                    script = script,
-                    onRunningChange = { running ->
-                        run {
-                            if (!model.setRunning(script.id, running)) authorizing = script
-                        }
-                    },
-                    onReadmeClick = { readmeFor = script.id },
-                    onLogsClick = { logsFor = script.id },
-                    onSettingsClick = { settingsFor = script.id },
-                )
-            }
-            actionError?.let { message ->
-                item(key = "error") { NukeEmptyState(stringResource(R.string.script_operation_failed), message) }
+        !model.available -> {
+            ScriptEmptyState(
+                Glyph.Warning,
+                stringResource(R.string.script_unavailable_title),
+                stringResource(R.string.script_unavailable_message),
+                modifier.padding(padding),
+            )
+        }
+
+        items == null -> {
+            ScriptLoadingState(
+                stringResource(R.string.script_scanning_title),
+                stringResource(R.string.script_scanning_message),
+                modifier.padding(padding),
+            )
+        }
+
+        scripts.isEmpty() -> {
+            ScriptEmptyState(
+                Glyph.Puzzle,
+                stringResource(R.string.script_none_title),
+                stringResource(R.string.script_none_message),
+                modifier.padding(padding),
+            )
+        }
+
+        else -> {
+            LazyColumn(
+                modifier = modifier.padding(horizontal = 18.dp),
+                contentPadding = padding,
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                items(scripts, key = { it.id }) { script ->
+                    InstalledScriptCard(
+                        script = script,
+                        onRunningChange = { running ->
+                            run {
+                                if (!model.setRunning(script.id, running)) authorizing = script
+                            }
+                        },
+                        onReadmeClick = { readmeFor = script.id },
+                        onLogsClick = { logsFor = script.id },
+                        onSettingsClick = { settingsFor = script.id },
+                    )
+                }
+                actionError?.let { message ->
+                    item(key = "error") { NukeEmptyState(stringResource(R.string.script_operation_failed), message) }
+                }
             }
         }
     }
@@ -222,12 +247,17 @@ private fun InstalledScripts(model: ScriptsModel, modifier: Modifier, padding: P
 }
 
 @Composable
-private fun ToolbarButton(glyph: Glyph, description: String, onClick: () -> Unit) {
+private fun ToolbarButton(
+    glyph: Glyph,
+    description: String,
+    onClick: () -> Unit,
+) {
     Box(
-        modifier = Modifier
-            .size(44.dp)
-            .semantics { this.contentDescription = description }
-            .nukeClick(role = Role.Button, onClick = onClick),
+        modifier =
+            Modifier
+                .size(44.dp)
+                .semantics { this.contentDescription = description }
+                .nukeClick(role = Role.Button, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         GlyphIcon(glyph, null, iconSize = 21.dp)
@@ -235,14 +265,20 @@ private fun ToolbarButton(glyph: Glyph, description: String, onClick: () -> Unit
 }
 
 @Composable
-internal fun ScriptEmptyState(glyph: Glyph, title: String, message: String, modifier: Modifier = Modifier) {
+internal fun ScriptEmptyState(
+    glyph: Glyph,
+    title: String,
+    message: String,
+    modifier: Modifier = Modifier,
+) {
     val colors = NukeTheme.colors
     ScriptStateLayout(title, message, modifier) {
         Box(
-            modifier = Modifier
-                .size(104.dp)
-                .clip(RoundedCornerShape(topStart = 38.dp, topEnd = 22.dp, bottomEnd = 40.dp, bottomStart = 28.dp))
-                .background(lerp(colors.surface, colors.accent, if (colors.isLight) 0.14f else 0.22f)),
+            modifier =
+                Modifier
+                    .size(104.dp)
+                    .clip(RoundedCornerShape(topStart = 38.dp, topEnd = 22.dp, bottomEnd = 40.dp, bottomStart = 28.dp))
+                    .background(lerp(colors.surface, colors.accent, if (colors.isLight) 0.14f else 0.22f)),
             contentAlignment = Alignment.Center,
         ) {
             androidx.compose.runtime.CompositionLocalProvider(androidx.compose.material3.LocalContentColor provides colors.accent) {
@@ -253,14 +289,19 @@ internal fun ScriptEmptyState(glyph: Glyph, title: String, message: String, modi
 }
 
 @Composable
-internal fun ScriptLoadingState(title: String, message: String, modifier: Modifier = Modifier) {
+internal fun ScriptLoadingState(
+    title: String,
+    message: String,
+    modifier: Modifier = Modifier,
+) {
     val colors = NukeTheme.colors
     ScriptStateLayout(title, message, modifier) {
         Box(
-            modifier = Modifier
-                .size(80.dp)
-                .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 20.dp, bottomEnd = 32.dp, bottomStart = 24.dp))
-                .background(lerp(colors.surface, colors.accent, if (colors.isLight) 0.12f else 0.20f)),
+            modifier =
+                Modifier
+                    .size(80.dp)
+                    .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 20.dp, bottomEnd = 32.dp, bottomStart = 24.dp))
+                    .background(lerp(colors.surface, colors.accent, if (colors.isLight) 0.12f else 0.20f)),
             contentAlignment = Alignment.Center,
         ) {
             CircularProgressIndicator(modifier = Modifier.size(38.dp), color = colors.accent, strokeWidth = 3.dp)
@@ -269,7 +310,12 @@ internal fun ScriptLoadingState(title: String, message: String, modifier: Modifi
 }
 
 @Composable
-private fun ScriptStateLayout(title: String, message: String, modifier: Modifier, graphic: @Composable () -> Unit) {
+private fun ScriptStateLayout(
+    title: String,
+    message: String,
+    modifier: Modifier,
+    graphic: @Composable () -> Unit,
+) {
     val colors = NukeTheme.colors
     Box(modifier.fillMaxSize().padding(horizontal = 28.dp), contentAlignment = Alignment.Center) {
         Column(
@@ -303,23 +349,28 @@ private fun ScriptStateLayout(title: String, message: String, modifier: Modifier
 // The document picker answers the settings Activity, which runs in the host process, so the package is read with
 // the host's grant to it.
 @Composable
-private fun ScriptImportFlow(model: ScriptsModel, request: Int) {
+private fun ScriptImportFlow(
+    model: ScriptsModel,
+    request: Int,
+) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var state by remember { mutableStateOf<ImportState>(ImportState.Idle) }
-    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-        if (uri == null) return@rememberLauncherForActivityResult
-        state = ImportState.Inspecting
-        scope.launch {
-            state = try {
-                ImportState.Ready(model.stage { context.contentResolver.openInputStream(uri) })
-            } catch (error: ImportFailure) {
-                ImportState.Failed(error.code, error.message.orEmpty())
-            } catch (error: java.io.IOException) {
-                ImportState.Failed("IO", error.message.orEmpty())
+    val launcher =
+        rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+            if (uri == null) return@rememberLauncherForActivityResult
+            state = ImportState.Inspecting
+            scope.launch {
+                state =
+                    try {
+                        ImportState.Ready(model.stage { context.contentResolver.openInputStream(uri) })
+                    } catch (error: ImportFailure) {
+                        ImportState.Failed(error.code, error.message.orEmpty())
+                    } catch (error: java.io.IOException) {
+                        ImportState.Failed("IO", error.message.orEmpty())
+                    }
             }
         }
-    }
     LaunchedEffect(request) {
         if (request > 0) launcher.launch(arrayOf("*/*"))
     }
@@ -332,12 +383,13 @@ private fun ScriptImportFlow(model: ScriptsModel, request: Int) {
         onConfirm = { ready ->
             state = ImportState.Installing(ready.import)
             scope.launch {
-                state = try {
-                    model.install(ready.import)
-                    ImportState.Idle
-                } catch (error: ImportFailure) {
-                    ImportState.Failed(error.code, error.message.orEmpty())
-                }
+                state =
+                    try {
+                        model.install(ready.import)
+                        ImportState.Idle
+                    } catch (error: ImportFailure) {
+                        ImportState.Failed(error.code, error.message.orEmpty())
+                    }
             }
         },
     )
@@ -345,8 +397,19 @@ private fun ScriptImportFlow(model: ScriptsModel, request: Int) {
 
 internal sealed interface ImportState {
     data object Idle : ImportState
+
     data object Inspecting : ImportState
-    data class Ready(val import: StagedImport) : ImportState
-    data class Installing(val import: StagedImport) : ImportState
-    data class Failed(val code: String, val detail: String) : ImportState
+
+    data class Ready(
+        val import: StagedImport,
+    ) : ImportState
+
+    data class Installing(
+        val import: StagedImport,
+    ) : ImportState
+
+    data class Failed(
+        val code: String,
+        val detail: String,
+    ) : ImportState
 }
