@@ -12,6 +12,7 @@ import java.util.Collections
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicInteger
+import sun.misc.Unsafe
 
 // Real API interfaces, simulated transport only. No JVM or ART method is patched.
 class TestModernFramework(private val version: Int = 102) : XposedInterface {
@@ -30,6 +31,9 @@ class TestModernFramework(private val version: Int = 102) : XposedInterface {
     val logs = CopyOnWriteArrayList<String>()
     var attachFailure: Throwable? = null
     var downstream: ((Executable, Any?, Array<Any?>) -> Any?)? = null
+
+    // The module's own APK as the framework reports it; replace it to simulate a framework that cannot say.
+    var moduleInfo: () -> ApplicationInfo = { applicationInfo(MODULE_APK) }
 
     override fun getApiVersion() = version
     override fun getFrameworkName() = "test-transport-only"
@@ -109,8 +113,18 @@ class TestModernFramework(private val version: Int = 102) : XposedInterface {
     override fun deoptimize(executable: Executable): Boolean = error("Unused")
     override fun getInvoker(method: Method): XposedInterface.Invoker<*, Method> = error("ORIGIN must not replace proceed")
     override fun <T> getInvoker(constructor: Constructor<T>): XposedInterface.CtorInvoker<T> = error("Unused")
-    override fun getModuleApplicationInfo(): ApplicationInfo = error("Unused")
+    override fun getModuleApplicationInfo(): ApplicationInfo = moduleInfo()
     override fun getRemotePreferences(group: String): SharedPreferences = error("Unused")
     override fun listRemoteFiles(): Array<String> = error("Unused")
     override fun openRemoteFile(name: String): ParcelFileDescriptor = error("Unused")
+
+    companion object {
+        const val MODULE_APK = "/data/app/module/base.apk"
+
+        // The android.jar constructor is a stub; allocate the passive DTO and set its public field.
+        fun applicationInfo(sourceDir: String?): ApplicationInfo {
+            val access = Unsafe::class.java.getDeclaredField("theUnsafe").apply { isAccessible = true }.get(null) as Unsafe
+            return (access.allocateInstance(ApplicationInfo::class.java) as ApplicationInfo).apply { this.sourceDir = sourceDir }
+        }
+    }
 }

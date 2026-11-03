@@ -66,6 +66,7 @@ class Libxposed102Entry internal constructor(
                 ProcessIdentity(pid, uid, name, param.packageName), requireNotNull(identity),
                 "libxposed102", LoadStage.HOST_CLASSLOADER_READY, param.classLoader,
                 param.applicationInfo.let { HostPaths(it.dataDir, it.sourceDir) },
+                moduleApkPath = moduleApkPath(),
                 framework = frameworkInfo(),
             ),
             requireNotNull(services),
@@ -73,6 +74,11 @@ class Libxposed102Entry internal constructor(
     }
 
     override fun onHotReloading(param: HotReloadingParam): Boolean = false
+
+    // Where the module's own APK is, as the framework knows it. The module's class loader cannot tell: under a patch
+    // (LSPatch) it delegates to the host's, so its AndroidManifest.xml resolves to the patched host APK, which another
+    // certificate signed. A framework that does not implement this reads as unknown, and the loader decides then.
+    private fun moduleApkPath(): String? = known { moduleApplicationInfo.sourceDir }?.takeIf { it.isNotBlank() }
 
     // What the framework says about itself. A member an older framework does not implement reads as unknown.
     private fun frameworkInfo() = FrameworkInfo(

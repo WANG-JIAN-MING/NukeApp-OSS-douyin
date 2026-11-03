@@ -103,6 +103,42 @@ class Libxposed102EntryTest {
         assertEquals(1, created)
     }
 
+    // Under a patch the module's class loader delegates to the host's, so the entry must name the module's own APK.
+    @Test fun `package ready names the module APK the framework reports`() {
+        entry.onModuleLoaded(loaded())
+        entry.onPackageReady(ready())
+        assertEquals(TestModernFramework.MODULE_APK, events.single().moduleApkPath)
+    }
+
+    private fun eventWith(moduleInfo: () -> ApplicationInfo): LoadEvent {
+        val recorded = ArrayList<LoadEvent>()
+        val fresh = Libxposed102Entry(
+            TestProfile,
+            { 42 to 10001 },
+            { object : RuntimeBootstrap {
+                override fun accept(event: LoadEvent, services: BootstrapServices): BootstrapResult {
+                    recorded += event
+                    return BootstrapResult.Ignored("recorded")
+                }
+            } },
+            { true },
+        )
+        fresh.attachFramework(TestModernFramework().apply { this.moduleInfo = moduleInfo }, Runnable {})
+        fresh.onModuleLoaded(loaded())
+        fresh.onPackageReady(ready())
+        return recorded.single()
+    }
+
+    @Test fun `a module APK the framework cannot name stays unknown and the bootstrap still runs`() {
+        assertNull(eventWith { throw AbstractMethodError("getModuleApplicationInfo") }.moduleApkPath)
+        assertNull(eventWith { TestModernFramework.applicationInfo(null) }.moduleApkPath)
+        assertNull(eventWith { TestModernFramework.applicationInfo("") }.moduleApkPath)
+    }
+
+    @Test fun `a real failure reading the module APK is not hidden`() {
+        assertThrows(IllegalStateException::class.java) { eventWith { error("framework broke") } }
+    }
+
     @Test fun `tiktok host main process maps into the shared bootstrap`() {
         entry.onModuleLoaded(loaded("com.ss.android.ugc.aweme"))
         entry.onPackageReady(ready("com.ss.android.ugc.aweme"))
