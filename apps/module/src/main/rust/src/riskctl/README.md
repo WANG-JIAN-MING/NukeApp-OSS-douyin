@@ -25,13 +25,13 @@
 | `maps_memory` | 可写又可执行的映射、来自 memfd 或已删除文件的可执行内存（JIT 自己的不算）、模块库来自临时位置或两个路径 |
 | `network` | Frida 默认端口在监听、带 Frida 名字的 socket、环境里的代理 |
 | `root` | 常见路径下有没有 `su` |
-| `bootloader` | bootloader 锁定状态和验证启动状态 |
+| `bootloader` | bootloader 锁定状态、验证启动状态，以及 dm-verity 是否还在强制校验系统分区 |
 | `selinux` | SELinux 的强制/宽容模式 |
 | `selinux_policy` | `/sys/fs/selinux/status` 里的策略计数器是不是和正常启动一致 |
 | `kernel_exposure` | 内核符号地址、`/proc/kcore` 对应用是否可读 |
 | `mounts` | root 工具的挂载、系统分区是 overlay 或可写 |
 | `build` | 可调试构建、`ro.secure` 被关、test-keys |
-| `emulator` | 模拟器或 ARM 转译层 |
+| `emulator` | 模拟器、ARM 转译层，以及进程结构是否全部不像真机（见下面的结构探针） |
 | `adbd` | adbd 是否在运行 |
 
 级别有五种：`ok`、`info`（常见于会用这个模块的人，比如 root、bootloader 解锁，只提示）、`warn`（削弱了系统的某项保护）、`alert`（进程里有调试器、注入、插桩工具，或者代码被改过）、`unknown`（读不到，不等于没问题）。
@@ -54,6 +54,7 @@
 - **`selinux_policy` 是经验值。** 序号 4 且加载 1 次、或序号 0 且加载 0 次算正常，这是旧原生引擎的经验，别的厂商的手机启动方式不同时可能报警告，它只是提示。
 - **`signature_path` 依赖可读的映射。** 读内存之前先用 `/proc/self/maps` 确认这段地址可读，遇到只执行不可读的映射就记为“读不到”，而不是去读。
 - **系统属性只在 Android 上有。** 其他平台（比如开发机上跑测试）这些检测读不到，记为 `unknown`。
+- **`emulator` 的结构探针是经验值，还没有在真机上逐款验证。** 四项探针是：加载的 libc 和磁盘文件一致、`/proc/self/auxv` 带有内核必定给的项、Android 属性存在、映射里有 Android 运行时（APEX 或 `/system/` 下的 libc，加 ART 或 linker）。只有四项全部失败才报告“结构像模拟运行环境”，报告级别是 `info` 且不置标志；读不到的探针不算失败，所以不会因为读不了而凑满四项。源引擎里读不到也算失败，这里改成了更保守的做法。
 
 ## 文件
 
@@ -92,3 +93,6 @@ cargo test
 
 - **发送详细日志。** 现在报告只显示在对话框里，不会发送。将来发日志时要以一次现取的报告为基础，代码里留了 `TODO(log-sending)`（`DeviceTrust.kt` 和 `FailureReport.kt`）。
 - 旧原生引擎里的内核时序侧信道、`maps` 里匿名可执行段的细分判断没有搬，前者复杂，后者在 Android 10 以上会因为 JIT 对每台设备误报。
+- 系统调用一致性（`/proc/self/status`、`maps` 的读数和直接系统调用的结果对比）没有搬：需要内联汇编直接发起系统调用，这一块还没有真机验证。
+- `/proc/self/pagemap` 能否读取没有搬：同一进程一般总能读到自己的 pagemap，读到与否不说明什么。
+- 证书、时间回拨、签名频率限制这类检测属于签名流程，不是设备观察，不放在 riskctl 里。
